@@ -18,6 +18,10 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             } else {
                 $actionMethodName = $action . 'Action';
                 if (method_exists($this, $actionMethodName)) {
+                    Mage::app()->setUseSessionInUrl(false);
+                    umask(0);
+                    Mage::app()->addEventArea(Mage_Core_Model_App_Area::AREA_GLOBAL);
+                    Mage::app()->addEventArea('crontab');
                     $this->$actionMethodName();
                 } else {
                     echo "Action $action not found!\n";
@@ -339,17 +343,12 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function cronAction()
     {
-        Mage::app('admin')->setUseSessionInUrl(false);
-        umask(0);
-
         $mode = $this->getArg('mode');
         switch ($mode) {
             case 'always':
             case 'default':
                 $includeGroups = array_filter(array_map('trim', explode(',', $this->getArg('include'))));
                 $excludeGroups = array_filter(array_map('trim', explode(',', $this->getArg('exclude'))));
-                Mage::getConfig()->init()->loadEventObservers('crontab');
-                Mage::app()->addEventArea('crontab');
                 Mage::dispatchEvent($mode, array('include' => $includeGroups, 'exclude' => $excludeGroups));
                 break;
             default:
