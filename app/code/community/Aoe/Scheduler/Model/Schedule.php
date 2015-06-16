@@ -62,6 +62,15 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     protected $_eventPrefix = 'aoe_scheduler_schedule';
 
     /**
+     * Parameter name in event
+     *
+     * In observe method you can use $observer->getEvent()->getObject() in this case
+     *
+     * @var string
+     */
+    protected $_eventObject = 'schedule';
+
+    /**
      * @var Aoe_Scheduler_Model_Job
      */
     protected $job;
