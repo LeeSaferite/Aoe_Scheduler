@@ -38,10 +38,10 @@
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 {
-
     const STATUS_KILLED = 'killed';
     const STATUS_DISAPPEARED = 'gone'; // the status field is limited to 7 characters
     const STATUS_DIDNTDOANYTHING = 'nothing';
+    const STATUS_LOCKED = 'locked';
 
     const REASON_RUNNOW_WEB = 'run_now_web';
     const REASON_SCHEDULENOW_WEB = 'schedule_now_web';

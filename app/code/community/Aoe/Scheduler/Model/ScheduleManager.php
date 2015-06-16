@@ -27,12 +27,55 @@ class Aoe_Scheduler_Model_ScheduleManager
         foreach ($schedules as $key => $schedule) {
             /* @var Aoe_Scheduler_Model_Schedule $schedule */
             if (isset($seenJobs[$schedule->getJobCode()])) {
-                $schedule
-                    ->setMessages('Multiple tasks with the same job code were piling up. Skipping execution of duplicates.')
-                    ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
-                    ->save();
+                $result = $schedule->getResource()->trySetJobStatusAtomic(
+                    $schedule->getId(),
+                    Mage_Cron_Model_Schedule::STATUS_MISSED,
+                    Mage_Cron_Model_Schedule::STATUS_PENDING
+                );
+                if($result) {
+                    $schedule
+                        ->setMessages('Multiple tasks with the same job code were piling up. Skipping execution of duplicates.')
+                        ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
+                        ->save();
+                }
             } else {
                 $seenJobs[$schedule->getJobCode()] = 1;
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * Delete duplicate schedules
+     *
+     * The maximum run frequency is in minutes. Find any job with multiple schedules at the same minute and keep only one.
+     *
+     * @return $this
+     */
+    public function deleteDuplicateSchedules()
+    {
+        /** @var Aoe_Scheduler_Model_Resource_Schedule_Collection $schedules */
+        $schedules = Mage::getModel('cron/schedule')->getCollection()
+            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING);
+
+        $seen = array();
+        foreach ($schedules as $schedule) {
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
+            $key = $this->getScheduleKey($schedule->getJobCode(), strtotime($schedule->getScheduledAt()));
+            if (isset($seen[$key])) {
+                // Lock the schedule before deleting to prevent deleting a job in progress
+                $result = $schedule->getResource()->trySetJobStatusAtomic(
+                    $schedule->getId(),
+                    Aoe_Scheduler_Model_Schedule::STATUS_LOCKED,
+                    Mage_Cron_Model_Schedule::STATUS_PENDING
+                );
+                if($result) {
+                    $schedule->delete();
+                }
+            } else {
+                $seen[$key] = true;
             }
         }
 
@@ -92,36 +135,6 @@ class Aoe_Scheduler_Model_ScheduleManager
     }
 
     /**
-     * Delete duplicate crons
-     *
-     * @throws Exception
-     */
-    public function deleteDuplicates()
-    {
-        $cron_schedule = Mage::getSingleton('core/resource')->getTableName('cron_schedule');
-        $conn = Mage::getSingleton('core/resource')->getConnection('core_read');
-
-        // TODO: Direct sql is not nice. We can do better... :)
-        $results = $conn->fetchAll("
-			SELECT
-				GROUP_CONCAT(schedule_id) AS ids,
-				CONCAT(job_code, scheduled_at) AS jobkey,
-				count(*) AS qty
-			FROM {$cron_schedule}
-			WHERE status = '" . Mage_Cron_Model_Schedule::STATUS_PENDING . "'
-			GROUP BY jobkey
-			HAVING qty > 1;
-		");
-        foreach ($results as $row) {
-            $ids = explode(',', $row['ids']);
-            $removeIds = array_slice($ids, 1);
-            foreach ($removeIds as $id) {
-                Mage::getModel('cron/schedule')->load($id)->delete();
-            }
-        }
-    }
-
-    /**
      * Generate cron schedule.
      * Rewrites the original method to remove duplicates afterwards (that exists because of a bug)
      *
@@ -139,7 +152,7 @@ class Aoe_Scheduler_Model_ScheduleManager
 
         $startTime = microtime(true);
 
-        /* @var $jobs Aoe_Scheduler_Model_Resource_Job_Collection */
+        /* @var Aoe_Scheduler_Model_Resource_Job_Collection $jobs */
         $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
         $jobs->setActiveOnly(true);
         foreach ($jobs as $job) {
@@ -152,7 +165,7 @@ class Aoe_Scheduler_Model_ScheduleManager
          */
         Mage::app()->saveCache(time(), Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
 
-        $this->deleteDuplicates();
+        $this->deleteDuplicateSchedules();
 
         if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
             $history = Mage::getModel('cron/schedule')->getCollection()
@@ -185,9 +198,17 @@ class Aoe_Scheduler_Model_ScheduleManager
         if (!empty($jobCode)) {
             $pendingSchedules->addFieldToFilter('job_code', $jobCode);
         }
-        foreach ($pendingSchedules as $key => $schedule) {
+        foreach ($pendingSchedules as $schedule) {
             /* @var Aoe_Scheduler_Model_Schedule $schedule */
-            $schedule->delete();
+            // Lock the schedule before deleting to prevent deleting a job in progress
+            $result = $schedule->getResource()->trySetJobStatusAtomic(
+                $schedule->getId(),
+                Aoe_Scheduler_Model_Schedule::STATUS_LOCKED,
+                Mage_Cron_Model_Schedule::STATUS_PENDING
+            );
+            if($result) {
+                $schedule->delete();
+            }
         }
         Mage::app()->saveCache(0, Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
         return $this;
@@ -282,6 +303,7 @@ class Aoe_Scheduler_Model_ScheduleManager
             Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS =>         Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS)*60,
             Aoe_Scheduler_Model_Schedule::STATUS_MISSED =>          Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
             Aoe_Scheduler_Model_Schedule::STATUS_ERROR =>           Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
+            Aoe_Scheduler_Model_Schedule::STATUS_LOCKED =>          Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
         );
 
         $now = time();
@@ -363,5 +385,16 @@ class Aoe_Scheduler_Model_ScheduleManager
             'count' => count($gaps),
             'last' => end($lastRuns)
         );
+    }
+
+    /**
+     * @param string $jobCode
+     * @param int $scheduledAtTimestamp
+     *
+     * @return string
+     */
+    protected function getScheduleKey($jobCode, $scheduledAtTimestamp)
+    {
+        return $jobCode . '/' . date('YmdHi', $scheduledAtTimestamp);
     }
 }
