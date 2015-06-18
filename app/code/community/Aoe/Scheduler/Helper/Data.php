@@ -138,6 +138,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         $schedules->getSelect()->limit(1)->order('executed_at DESC');
         $schedules->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS);
         $schedules->addFieldToFilter('job_code', $jobCode);
+        $schedules->setPageSize(1);
         $schedules->load();
         if (count($schedules) == 0) {
             return false;
