@@ -111,30 +111,6 @@ class Aoe_Scheduler_Model_ScheduleManager
     }
 
     /**
-     * Get job for task marked as always
-     *
-     * (Instead of reusing existing one - which results in loosing the history - create a new one every time)
-     *
-     * @param $jobCode
-     * @return Aoe_Scheduler_Model_Schedule|false
-     */
-    public function getScheduleForAlwaysJob($jobCode)
-    {
-        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
-        if (!$processManager->isJobCodeRunning($jobCode)) {
-            $ts = strftime('%Y-%m-%d %H:%M:00', time());
-            $schedule = Mage::getModel('cron/schedule') /* @var $schedule Aoe_Scheduler_Model_Schedule */
-                ->setJobCode($jobCode)
-                ->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
-                ->setCreatedAt($ts)
-                ->setScheduledAt($ts)
-                ->save();
-            return $schedule;
-        }
-        return false;
-    }
-
-    /**
      * Generate cron schedule.
      * Rewrites the original method to remove duplicates afterwards (that exists because of a bug)
      *

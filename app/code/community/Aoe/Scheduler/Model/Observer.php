@@ -73,11 +73,16 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         $jobs->setActiveOnly(true);
         foreach ($jobs as $job) {
             /* @var Aoe_Scheduler_Model_Job $job */
-            if ($job->isAlwaysTask() && $job->getRunModel()) {
-                $schedule = $scheduleManager->getScheduleForAlwaysJob($job->getJobCode());
-                if ($schedule !== false) {
-                    $schedule->process();
-                }
+            if ($job->isAlwaysTask() && $job->getRunModel() && !$processManager->isJobCodeRunning($job->getJobCode())) {
+                /* @var Aoe_Scheduler_Model_Schedule $schedule */
+                $schedule = Mage::getModel('cron/schedule');
+                $schedule->setJobCode($job->getJobCode());
+                $schedule->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_RUNNING);
+                $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_DISPATCH_ALWAYS);
+                $schedule->setCreatedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
+                $schedule->setScheduledAt(strftime('%Y-%m-%d %H:%M:00', time()));
+                $schedule->save();
+                $schedule->runNow(false);
             }
         }
     }

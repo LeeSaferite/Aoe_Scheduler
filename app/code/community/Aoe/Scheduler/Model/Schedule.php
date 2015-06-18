@@ -50,6 +50,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     const REASON_RUNNOW_API = 'run_now_api';
     const REASON_SCHEDULENOW_API = 'schedule_now_api';
     const REASON_GENERATESCHEDULES = 'generate_schedules';
+    const REASON_DISPATCH_ALWAYS = 'dispatch_always';
     const REASON_DEPENDENCY_ALL = 'dependency_all';
     const REASON_DEPENDENCY_SUCCESS = 'dependency_success';
     const REASON_DEPENDENCY_FAILURE = 'dependency_failure';
