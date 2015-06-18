@@ -143,4 +143,67 @@ class Aoe_Scheduler_Model_ProcessManager
         $this->checkRunningJobs();
         $this->processKillRequests();
     }
+
+    /**
+     * Check if process is running (linux only)
+     *
+     * @param int $pid
+     *
+     * @return bool
+     */
+    protected function checkPidExists($pid, $timeout = 0)
+    {
+        $pid = max(intval($pid), 0);
+        return $pid && file_exists('/proc/' . $pid);
+    }
+
+    /**
+     * Check for a PID to be gone
+     *
+     * @param int $pid
+     * @param int $timeout
+     *
+     * @return bool true is the PID is gone, false if it is still around
+     */
+    protected function checkPidGone($pid, $timeout = 0)
+    {
+        $timeout = min(max(intval($timeout), 0), 60);
+
+        while ($timeout && $this->checkPidExists($pid)) {
+            $timeout--;
+            sleep(1);
+        }
+
+        return !$this->checkPidExists($pid);
+    }
+
+    /**
+     * Terminate a PID via SIGINT
+     *
+     * This is the 'nice' way
+     *
+     * @param int $pid
+     *
+     * @return bool
+     */
+    protected function sendSigInt($pid)
+    {
+        $pid = max(intval($pid), 0);
+        return $pid && function_exists('posix_kill') && posix_kill($pid, SIGINT);
+    }
+
+    /**
+     * Terminate a PID via SIGKILL
+     *
+     * This is the 'hard' way
+     *
+     * @param int $pid
+     *
+     * @return bool
+     */
+    protected function sendSigKill($pid)
+    {
+        $pid = max(intval($pid), 0);
+        return $pid && function_exists('posix_kill') && posix_kill($pid, SIGKILL);
+    }
 }
