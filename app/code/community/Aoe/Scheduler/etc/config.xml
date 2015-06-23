@@ -37,6 +37,7 @@
             </cron>
             <cron_resource>
                 <rewrite>
+                    <schedule>Aoe_Scheduler_Model_Resource_Schedule</schedule>
                     <schedule_collection>Aoe_Scheduler_Model_Resource_Schedule_Collection</schedule_collection>
                 </rewrite>
             </cron_resource>
@@ -155,6 +156,7 @@
             <cron>
                 <enable>1</enable>
                 <mark_as_error_after>15</mark_as_error_after>
+                <lastseen_timeout>5</lastseen_timeout>
                 <scheduler_cron_expr_heartbeat>*/5 * * * *</scheduler_cron_expr_heartbeat>
                 <error_email_identity>general</error_email_identity>
                 <error_email_template>system_cron_error_email_template</error_email_template>

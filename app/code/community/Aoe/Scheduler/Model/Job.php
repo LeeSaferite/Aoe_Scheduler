@@ -143,11 +143,6 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
         return $helper->getCallBack($this->getRunModel());
     }
 
-    public function canBeScheduled()
-    {
-        return $this->getIsActive() && $this->getCronExpression() && !$this->isAlwaysTask();
-    }
-
     /**
      * @return bool
      */

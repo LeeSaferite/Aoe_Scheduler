@@ -6,8 +6,9 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
     public function setup()
     {
         // delete all schedules
-        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
-        $scheduleManager->deleteAll();
+        /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
+        $schedules = Mage::getModel('cron/schedule')->getCollection();
+        $schedules->getConnection()->delete($schedules->getMainTable());
     }
 
     /**

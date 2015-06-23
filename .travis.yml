@@ -1,9 +1,8 @@
 language: php
 php:
-  - 5.3
   - 5.4
   - 5.5
-  #- 5.6
+  - 5.6
   #- hhvm
 matrix:
   allow_failures:
@@ -30,5 +29,6 @@ notifications:
   email:
     recipients:
       - travis@fabrizio-branca.de
+      - lee.saferite@aoe.com
     on_success: always
     on_failure: always

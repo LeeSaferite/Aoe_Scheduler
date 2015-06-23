@@ -19,11 +19,14 @@ class Aoe_Scheduler_Model_Api extends Mage_Api_Model_Resource_Abstract
             Mage::throwException("'Run now' disabled by configuration (system/cron/enableRunNow)");
         }
 
-        $schedule = Mage::getModel('cron/schedule')/* @var $schedule Aoe_Scheduler_Model_Schedule */
-            ->setJobCode($code)
-            ->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_RUNNOW_API)
-            ->runNow(false) // without trying to lock the job
-            ->save();
+        /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $schedule = Mage::getModel('cron/schedule');
+        $schedule->setJobCode($code);
+        $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_RUNNOW_API);
+
+        /* @var Aoe_Scheduler_Model_ScheduleManager $manager */
+        $manager = Mage::getModel('aoe_scheduler/scheduleManager');
+        $manager->runNow($schedule);
 
         return $schedule->getData();
     }
@@ -37,11 +40,15 @@ class Aoe_Scheduler_Model_Api extends Mage_Api_Model_Resource_Abstract
      */
     public function schedule($code, $time = null)
     {
-        $schedule = Mage::getModel('cron/schedule')/* @var $schedule Aoe_Scheduler_Model_Schedule */
-            ->setJobCode($code)
-            ->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_SCHEDULENOW_API)
-            ->schedule($time)
-            ->save();
+        /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $schedule = Mage::getModel('cron/schedule');
+        $schedule->setJobCode($code);
+        $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_SCHEDULENOW_API);
+
+        /* @var Aoe_Scheduler_Model_ScheduleManager $manager */
+        $manager = Mage::getModel('aoe_scheduler/scheduleManager');
+        $manager->schedule($schedule, $time);
+
         return $schedule->getData();
     }
 

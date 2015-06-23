@@ -20,27 +20,39 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
             return;
         }
 
-        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
-        $processManager->watchdog();
-
-        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
-        $scheduleManager->logRun();
-
-        $helper = Mage::helper('aoe_scheduler'); /* @var Aoe_Scheduler_Helper_Data $helper */
+        /* @var Aoe_Scheduler_Helper_Data $helper */
+        $helper = Mage::helper('aoe_scheduler');
         $includeJobs = $helper->addGroupJobs((array)$observer->getIncludeJobs(), (array)$observer->getIncludeGroups());
         $excludeJobs = $helper->addGroupJobs((array)$observer->getExcludeJobs(), (array)$observer->getExcludeGroups());
 
-        // Coalesce all jobs that should have run before now, by job code, by marking the oldest entries as missed.
-        $scheduleManager->cleanMissedSchedules();
+        /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
+
+        // Log this run in memory
+        $scheduleManager->logRun();
+
+        // Generate kill requests for runaway tasks
+        $scheduleManager->handleRunawayTasks();
+
+        // Process kill requests
+        $scheduleManager->handleKills();
+
+        // Change status on missed entries
+        $scheduleManager->handleMissed();
 
         // Iterate over all pending jobs
-        foreach ($scheduleManager->getPendingSchedules($includeJobs, $excludeJobs) as $schedule) {
+        foreach ($scheduleManager->getPending($includeJobs, $excludeJobs) as $schedule) {
             /* @var Aoe_Scheduler_Model_Schedule $schedule */
-            $schedule->process();
+
+            // Execute a job
+            $scheduleManager->runNow($schedule);
         }
 
         // Generate new schedules
-        $scheduleManager->generateSchedules();
+        $scheduleManager->generateAll();
+
+        // Clean up any duplicate entries
+        $scheduleManager->handleDuplicates();
 
         // Clean up schedule history
         $scheduleManager->cleanup();
@@ -57,32 +69,38 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
             return;
         }
 
-        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
-        $processManager->watchdog();
+        /* @var Aoe_Scheduler_Model_ProcessManager $processManager */
+        $processManager = Mage::getModel('aoe_scheduler/processManager');
 
-        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
-
-        $helper = Mage::helper('aoe_scheduler'); /* @var Aoe_Scheduler_Helper_Data $helper */
+        /* @var Aoe_Scheduler_Helper_Data $helper */
+        $helper = Mage::helper('aoe_scheduler');
         $includeJobs = $helper->addGroupJobs((array)$observer->getIncludeJobs(), (array)$observer->getIncludeGroups());
         $excludeJobs = $helper->addGroupJobs((array)$observer->getExcludeJobs(), (array)$observer->getExcludeGroups());
 
-        /* @var $jobs Aoe_Scheduler_Model_Resource_Job_Collection */
+        /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
+
+        // Generate kill requests for runaway tasks
+        $scheduleManager->handleRunawayTasks();
+
+        // Process kill requests
+        $scheduleManager->handleKills();
+
+        /* @var Aoe_Scheduler_Model_Resource_Job_Collection $jobs */
         $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
         $jobs->setWhiteList($includeJobs);
         $jobs->setBlackList($excludeJobs);
         $jobs->setActiveOnly(true);
         foreach ($jobs as $job) {
             /* @var Aoe_Scheduler_Model_Job $job */
-            if ($job->isAlwaysTask() && $job->getRunModel() && !$processManager->isJobCodeRunning($job->getJobCode())) {
+            if ($job->isAlwaysTask() && !$processManager->isJobCodeRunning($job->getJobCode())) {
                 /* @var Aoe_Scheduler_Model_Schedule $schedule */
                 $schedule = Mage::getModel('cron/schedule');
                 $schedule->setJobCode($job->getJobCode());
-                $schedule->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_RUNNING);
                 $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_DISPATCH_ALWAYS);
-                $schedule->setCreatedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
-                $schedule->setScheduledAt(strftime('%Y-%m-%d %H:%M:00', time()));
-                $schedule->save();
-                $schedule->runNow(false);
+
+                // Execute a job
+                $scheduleManager->runNow($schedule);
             }
         }
     }
