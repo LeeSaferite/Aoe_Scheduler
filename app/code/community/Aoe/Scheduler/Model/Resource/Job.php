@@ -63,6 +63,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
             $object->setJobCode('');
             $object->setXmlJobData(array());
             $object->setDbJobData(array());
+
             return $this;
         }
 
@@ -137,7 +138,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
                 array(
                     'scope = ?'    => 'default',
                     'scope_id = ?' => 0,
-                    'path = ?'     => $pathPrefix . $k
+                    'path = ?'     => $pathPrefix . $k,
                 )
             );
         }
@@ -148,7 +149,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
                     'scope'    => 'default',
                     'scope_id' => 0,
                     'path'     => $pathPrefix . $k,
-                    'value'    => $v
+                    'value'    => $v,
                 )
             );
         }
@@ -158,7 +159,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
                 array(
                     'scope = ?'    => 'default',
                     'scope_id = ?' => 0,
-                    'path = ?'     => $pathPrefix . $k
+                    'path = ?'     => $pathPrefix . $k,
                 )
             );
         }
@@ -202,9 +203,9 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         $adapter->delete(
             $this->getMainTable(),
             array(
-                'path LIKE ?' => $this->getJobSearchPath($object->getJobCode()),
-                'scope = ?' => 'default',
-                'scope_id = ?' => 0
+                'path LIKE ?'  => $this->getJobSearchPath($object->getJobCode()),
+                'scope = ?'    => 'default',
+                'scope_id = ?' => 0,
             )
         );
 
@@ -353,6 +354,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         $job->setParameters(isset($data['parameters']) ? $data['parameters'] : '');
         $job->setGroups(isset($data['groups']) ? $data['groups'] : '');
         $job->setIsActive(isset($data['is_active']) ? $data['is_active'] : '');
+
         return $job;
     }
 }

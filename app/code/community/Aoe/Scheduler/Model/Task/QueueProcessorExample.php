@@ -4,7 +4,7 @@
  * QueueProcessorExample Task
  *
  * @author Fabrizio Branca
- * @since 2016-03-08
+ * @since  2016-03-08
  */
 class Aoe_Scheduler_Model_Task_QueueProcessorExample
 {
@@ -13,6 +13,7 @@ class Aoe_Scheduler_Model_Task_QueueProcessorExample
      * Run
      *
      * @param Aoe_Scheduler_Model_Schedule $schedule
+     *
      * @return string
      * @throws Exception
      */
@@ -24,15 +25,18 @@ class Aoe_Scheduler_Model_Task_QueueProcessorExample
         $numberOfMessagesToFetch = 10;
 
         // [...]
-        $result = $sqsClient->receiveMessage([
-            'AttributeNames' => ['All'],
-            'MaxNumberOfMessages' => $numberOfMessagesToFetch,
-            'QueueUrl' => $queueUrl,
-        ]);
+        $result = $sqsClient->receiveMessage(
+            [
+                'AttributeNames'      => ['All'],
+                'MaxNumberOfMessages' => $numberOfMessagesToFetch,
+                'QueueUrl'            => $queueUrl,
+            ]
+        );
         $messages = $result->search('Messages[]');
 
         if (count($messages) == 0) {
             $schedule->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING);
+
             return;
         }
 
@@ -40,10 +44,12 @@ class Aoe_Scheduler_Model_Task_QueueProcessorExample
         foreach ($messages as $message) {
             // do something with the message
             // [...]
-            $sqsClient->deleteMessage([
-                'QueueUrl' => $queueUrl,
-                'ReceiptHandle' => $message['ReceiptHandle']
-            ]);
+            $sqsClient->deleteMessage(
+                [
+                    'QueueUrl'      => $queueUrl,
+                    'ReceiptHandle' => $message['ReceiptHandle'],
+                ]
+            );
         }
 
         if (count($messages) == $numberOfMessagesToFetch) {

@@ -38,7 +38,12 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
 
         // check configuration
         if (Mage::getStoreConfig('system/cron/schedule_generate_every') > Mage::getStoreConfig('system/cron/schedule_ahead_for')) {
-            $this->_getSession()->addError($this->__('Configuration problem. "Generate Schedules Every" is higher than "Schedule Ahead for". Please check your <a href="%s">configuration settings</a>.', $this->getUrl('adminhtml/system_config/edit', array('section' => 'system')) . '#system_cron'));
+            $this->_getSession()->addError(
+                $this->__(
+                    'Configuration problem. "Generate Schedules Every" is higher than "Schedule Ahead for". Please check your <a href="%s">configuration settings</a>.',
+                    $this->getUrl('adminhtml/system_config/edit', array('section' => 'system')) . '#system_cron'
+                )
+            );
         }
 
         // Check the cron is being run as the configured user and whether or not to show the message
@@ -59,11 +64,14 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
      */
     protected function checkLocalCodePool()
     {
-        $helper = Mage::helper('aoe_scheduler/compatibility'); /* @var Aoe_Scheduler_Helper_Compatibility $helper */
+        $helper = Mage::helper('aoe_scheduler/compatibility');
+        /* @var Aoe_Scheduler_Helper_Compatibility $helper */
         if ($helper->oldConfigXmlExists()) {
             $this->_getSession()->addError($this->__('Looks like you have an older version of Aoe_Scheduler installed that lived in the local code pool. Please delete everything under "%s"', $helper->getLocalCodeDir()));
+
             return false;
         }
+
         return true;
     }
 
@@ -94,12 +102,14 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
 
     /**
      * Check the user running the cron matches the configured user, and if not prevented, display a warning message with some CTAs
+     *
      * @return void
      */
     protected function _checkCronUser()
     {
 
-        $helper = Mage::helper('aoe_scheduler'); /* @var Aoe_Scheduler_Helper_Data $helper */
+        $helper = Mage::helper('aoe_scheduler');
+        /* @var Aoe_Scheduler_Helper_Data $helper */
 
         // If opted out of the message, don't show it
         if (!$helper->getShowUserCronMessage()) {
@@ -133,7 +143,6 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
                     )
                 );
             }
-            
         }
     }
 

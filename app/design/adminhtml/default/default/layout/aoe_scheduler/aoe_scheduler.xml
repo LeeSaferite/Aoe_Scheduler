@@ -3,13 +3,29 @@
 
     <adminhtml_timeline_index>
         <reference name="head">
-            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/timeline.css</stylesheet></action>
-            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+            <action method="addCss">
+                <stylesheet>aoe_scheduler/StyleSheet/timeline.css</stylesheet>
+            </action>
+            <action method="addCss">
+                <stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet>
+            </action>
 
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-1.6.2.min.js</script></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.js</script></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.dynamic.js</script></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/common.js</script></action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>aoe_scheduler/JavaScript/jquery-1.6.2.min.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>aoe_scheduler/JavaScript/tooltip.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>aoe_scheduler/JavaScript/tooltip.dynamic.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>aoe_scheduler/JavaScript/common.js</script>
+            </action>
         </reference>
         <reference name="content">
             <block type="aoe_scheduler/adminhtml_timeline" name="aoe_scheduler.timeline" template="aoe_scheduler/timeline.phtml"/>
@@ -30,7 +46,9 @@
 
     <adminhtml_scheduler_index>
         <reference name="head">
-            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+            <action method="addCss">
+                <stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet>
+            </action>
         </reference>
         <reference name="content">
             <block type="aoe_scheduler/adminhtml_scheduler" name="aoe_scheduler.scheduler"/>
@@ -39,7 +57,9 @@
 
     <adminhtml_job_index>
         <reference name="head">
-            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+            <action method="addCss">
+                <stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet>
+            </action>
         </reference>
         <reference name="content">
             <block type="aoe_scheduler/adminhtml_job" name="aoe_scheduler.job"/>
@@ -50,7 +70,10 @@
         <reference name="left">
             <block type="aoe_scheduler/adminhtml_job_edit_tabs" name="aoe_scheduler_edit_tabs">
                 <block type="aoe_scheduler/adminhtml_job_edit_tab_form" name="aoe_scheduler_edit_tab_form"/>
-                <action method="addTab"><name>information_section</name><block>aoe_scheduler_edit_tab_form</block></action>
+                <action method="addTab">
+                    <name>information_section</name>
+                    <block>aoe_scheduler_edit_tab_form</block>
+                </action>
             </block>
         </reference>
         <reference name="content">
@@ -60,9 +83,17 @@
 
     <adminhtml_instructions_index>
         <reference name="head">
-            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/instructions.css</stylesheet></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-1.6.2.min.js</script></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/instructions.js</script></action>
+            <action method="addCss">
+                <stylesheet>aoe_scheduler/StyleSheet/instructions.css</stylesheet>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>aoe_scheduler/JavaScript/jquery-1.6.2.min.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <script>aoe_scheduler/JavaScript/instructions.js</script>
+            </action>
         </reference>
         <reference name="content">
             <block type="aoe_scheduler/adminhtml_instructions" name="aoe_scheduler.instructions" template="aoe_scheduler/instructions.phtml"/>

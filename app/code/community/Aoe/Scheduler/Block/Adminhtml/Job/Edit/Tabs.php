@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Job edit tabs container
  *
  * @author Fabrizio Branca
- * @since 2014-08-09
+ * @since  2014-08-09
  */
 class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
 {

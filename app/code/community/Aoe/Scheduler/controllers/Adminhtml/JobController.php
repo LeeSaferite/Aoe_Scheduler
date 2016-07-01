@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cron controller
  *
@@ -132,6 +133,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
         $jobCode = $this->getRequest()->getParam('job_code', null);
         $job = Mage::getModel('aoe_scheduler/job')->load($jobCode);
         Mage::register('current_job_instance', $job);
+
         return $job;
     }
 
@@ -143,6 +145,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
         }
         $allowedCodes = Mage::getSingleton('aoe_scheduler/job')->getResource()->getJobCodes();
         $codes = array_intersect(array_unique(array_filter(array_map('trim', $codes))), $allowedCodes);
+
         return $codes;
     }
 
@@ -163,7 +166,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
         $this->_initAction()
             ->_addBreadcrumb($this->__('Edit Job'), $this->__('Edit Job'))
             ->_title($this->__('Edit Job'))
-            ->renderLayout();        
+            ->renderLayout();
     }
 
     protected function _filterPostData($data)
@@ -184,8 +187,10 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
             }
         } catch (Exception $e) {
             $this->_getSession()->addError($e->getMessage());
+
             return false;
         }
+
         // TODO: implement!
         return true;
     }
@@ -203,6 +208,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
             //validating
             if (!$this->_validatePostData($data)) {
                 $this->_redirect('*/*/edit', array('job_code' => $job->getJobCode(), '_current' => true));
+
                 return;
             }
 
@@ -219,6 +225,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
                 // check if 'Save and Continue'
                 if ($this->getRequest()->getParam('back', false)) {
                     $this->_redirect('*/*/edit', array('job_code' => $job->getJobCode(), '_current' => true));
+
                     return;
                 }
 
@@ -231,6 +238,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
 
                 // go to grid
                 $this->_redirect('*/*');
+
                 return;
             } catch (Mage_Core_Exception $e) {
                 Mage::logException($e);
@@ -242,6 +250,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
 
             $this->_getSession()->setFormData($data);
             $this->_redirect('*/*/edit', array('job_code' => $this->getRequest()->getParam('job_code')));
+
             return;
         }
 
@@ -267,6 +276,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
             $this->_getSession()->addError($e->getMessage());
         }
         $this->_redirect('*/*/');
+
         return;
     }
 

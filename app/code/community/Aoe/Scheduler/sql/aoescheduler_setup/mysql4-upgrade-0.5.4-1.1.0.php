@@ -6,11 +6,11 @@ $this->getConnection()->modifyColumn(
     $this->getTable('cron/schedule'),
     'status',
     array(
-        'type'      => Varien_Db_Ddl_Table::TYPE_TEXT,
-        'length'    => 30,
-        'nullable'  => false,
-        'default'   => 'pending',
-        'comment'   => 'Status'
+        'type'     => Varien_Db_Ddl_Table::TYPE_TEXT,
+        'length'   => 30,
+        'nullable' => false,
+        'default'  => 'pending',
+        'comment'  => 'Status',
     )
 );
 

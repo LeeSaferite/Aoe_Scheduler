@@ -25,6 +25,6 @@ $this->getConnection()->delete(
     array(
         'scope = ?'    => 'default',
         'scope_id = ?' => 0,
-        'path = ?'     => 'system/cron/disabled_crons'
+        'path = ?'     => 'system/cron/disabled_crons',
     )
 );

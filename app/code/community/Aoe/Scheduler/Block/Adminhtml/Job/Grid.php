@@ -18,7 +18,6 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
         $this->_pagerVisibility = false;
     }
 
-
     /**
      * Preparation of the data that is displayed by the grid.
      *
@@ -29,9 +28,9 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
         /** @var Aoe_Scheduler_Model_Resource_Job_Collection $collection */
         $collection = Mage::getSingleton('aoe_scheduler/job')->getCollection();
         $this->setCollection($collection);
+
         return parent::_prepareCollection();
     }
-
 
     /**
      * Add mass-actions to grid
@@ -72,9 +71,9 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
                 'url'   => $this->getUrl('*/*/enable'),
             )
         );
+
         return $this;
     }
-
 
     /**
      * Preparation of the requested columns of the grid
@@ -162,9 +161,9 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
                 'frame_callback' => array($this, 'decorateStatus'),
             )
         );
+
         return parent::_prepareColumns();
     }
-
 
     /**
      * Decorate status column values
@@ -180,9 +179,9 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
             $value ? 'notice' : 'critical',
             $this->__($value ? 'Enabled' : 'Disabled')
         );
+
         return $cell;
     }
-
 
     /**
      * Decorate cron expression
@@ -197,7 +196,6 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
         return $job->getCronExpression();
     }
 
-
     /**
      * Decorate cron expression
      *
@@ -209,7 +207,6 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
     {
         return sprintf('<span title="%s">%s</span>', $value, mb_strimwidth($value, 0, 40, "..."));
     }
-
 
     /**
      * Decorate cron expression

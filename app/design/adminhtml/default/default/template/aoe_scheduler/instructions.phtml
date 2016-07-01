@@ -1,7 +1,7 @@
 <?php
 /* @var $this Aoe_Scheduler_Block_Adminhtml_Instructions */
 
-$maintenanceModeCheck = '<span class="maintenance-check-command">! test -e '.$this->getMagentoRootpath() .'/maintenance.flag && </span>';
+$maintenanceModeCheck = '<span class="maintenance-check-command">! test -e ' . $this->getMagentoRootpath() . '/maintenance.flag && </span>';
 $schedule = '*<span class="every-five-minutes">/5</span> * * * *';
 ?>
 
@@ -25,23 +25,23 @@ $schedule = '*<span class="every-five-minutes">/5</span> * * * *';
         <p><input type="checkbox" name="add-mailto"><label for="add-mailto"><?php echo $this->__('Include email address for output messages') ?></label></p>
     </div>
 
-<h5><?php echo $this->__('Edit your crontab:') ?></h5>
+    <h5><?php echo $this->__('Edit your crontab:') ?></h5>
 <pre>
 sudo crontab -u <?php echo $this->getCurrentUser() ?> -e
 </pre>
 
 
-<h5><?php echo $this->__('Add following configuration:') ?></h5>
+    <h5><?php echo $this->__('Add following configuration:') ?></h5>
 <pre class="cron-configuration">
 <span class="croncommand mailto">MAILTO="<?php echo Mage::getSingleton('admin/session')->getUser()->getEmail(); ?>"
 </span><span class="croncommand classic"><?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/sh <?php echo $this->getMagentoRootpath() ?>/cron.sh
 </span><span class="croncommand scheduler"><?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode always
-<?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default
+        <?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default
 </span><span class="croncommand crongroups"><?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode always --includeGroups my_queue_jobs
-<?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode always --excludeGroups my_queue_jobs
-<?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default --includeGroups groupA,groupB
-<?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default --includeGroups groupC
-<?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default --excludeGroups groupA,groupB,groupC
+        <?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode always --excludeGroups my_queue_jobs
+        <?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default --includeGroups groupA,groupB
+        <?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default --includeGroups groupC
+        <?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default --excludeGroups groupA,groupB,groupC
 </span><span class="watchdog">*/10 * * * * <?php echo $maintenanceModeCheck ?>cd <?php echo $this->getMagentoRootpath() ?>/shell && /usr/bin/php scheduler.php --action watchdog
 </span></pre>
 

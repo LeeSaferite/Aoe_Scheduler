@@ -8,16 +8,16 @@
 class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
-    const XML_PATH_MAX_RUNNING_TIME    = 'system/cron/max_running_time';
-    const XML_PATH_EMAIL_TEMPLATE      = 'system/cron/error_email_template';
-    const XML_PATH_EMAIL_IDENTITY      = 'system/cron/error_email_identity';
-    const XML_PATH_EMAIL_RECIPIENT     = 'system/cron/error_email';
-    const XML_PATH_CRON_USER           = 'system/cron/cronUser';
-    const XML_PATH_KILL_ON_WRONG_USER  = 'system/cron/killOnIncorrectUser';
+    const XML_PATH_MAX_RUNNING_TIME = 'system/cron/max_running_time';
+    const XML_PATH_EMAIL_TEMPLATE = 'system/cron/error_email_template';
+    const XML_PATH_EMAIL_IDENTITY = 'system/cron/error_email_identity';
+    const XML_PATH_EMAIL_RECIPIENT = 'system/cron/error_email';
+    const XML_PATH_CRON_USER = 'system/cron/cronUser';
+    const XML_PATH_KILL_ON_WRONG_USER = 'system/cron/killOnIncorrectUser';
     const XML_PATH_SHOW_WRONG_USER_MSG = 'system/cron/showCronUserMessage';
     const XML_PATH_RUN_ONLY_IF_CACHE_PREFIX_ID_MATCHES = 'system/cron/runOnlyIfCachePrefixIdMatches';
 
-    const VAR_LAST_RUN_USER_CODE       = 'aoescheduler_lastrunuser';
+    const VAR_LAST_RUN_USER_CODE = 'aoescheduler_lastrunuser';
 
     protected $groupsToJobsMap = null;
 
@@ -26,9 +26,11 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * If $onlyNonEmptyValues is set, then all blank ('') values are removed.
      *
      * @see t3lib_div::trimExplode() in TYPO3
-     * @param $delim
+     *
+     * @param        $delim
      * @param string $string
-     * @param bool $removeEmptyValues If set, all empty values will be removed in output
+     * @param bool   $removeEmptyValues If set, all empty values will be removed in output
+     *
      * @return array Exploded values
      */
     public function trimExplode($delim, $string, $removeEmptyValues = false)
@@ -54,6 +56,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * Decorate status values
      *
      * @param $status
+     *
      * @return string
      */
     public function decorateStatus($status)
@@ -85,6 +88,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
                 $result = $status;
                 break;
         }
+
         return $result;
     }
 
@@ -93,6 +97,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * conflict with the method's optional ones
      *
      * @param string $value
+     *
      * @return string
      */
     public function decorateTimeFrameCallBack($value)
@@ -104,8 +109,9 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * Decorate time values
      *
      * @param string $value
-     * @param bool $echoToday if true "Today" will be added
+     * @param bool   $echoToday  if true "Today" will be added
      * @param string $dateFormat make sure Y-m-d is in it, if you want to have it replaced
+     *
      * @return string
      */
     public function decorateTime($value, $echoToday = false, $dateFormat = null)
@@ -115,12 +121,13 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         } else {
             $value = Mage::getModel('core/date')->date($dateFormat, $value);
             $replace = array(
-                Mage::getModel('core/date')->date('Y-m-d ', time()) => $echoToday ? Mage::helper('aoe_scheduler')->__('Today') . ', ' : '', // today
+                Mage::getModel('core/date')->date('Y-m-d ', time())              => $echoToday ? Mage::helper('aoe_scheduler')->__('Today') . ', ' : '', // today
                 Mage::getModel('core/date')->date('Y-m-d ', strtotime('+1 day')) => Mage::helper('aoe_scheduler')->__('Tomorrow') . ', ',
                 Mage::getModel('core/date')->date('Y-m-d ', strtotime('-1 day')) => Mage::helper('aoe_scheduler')->__('Yesterday') . ', ',
             );
             $value = str_replace(array_keys($replace), array_values($replace), $value);
         }
+
         return $value;
     }
 
@@ -136,6 +143,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * Get last execution time
      *
      * @param $jobCode
+     *
      * @return bool
      */
     public function getLastExecutionTime($jobCode)
@@ -143,13 +151,14 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         if ($this->isDisabled($jobCode)) {
             return false;
         }
-        $schedules = Mage::getModel('cron/schedule')->getCollection(); /* @var Mage_Cron_Model_Mysql4_Schedule_Collection $schedules */
+        $schedules = Mage::getModel('cron/schedule')->getCollection();
+        /* @var Mage_Cron_Model_Mysql4_Schedule_Collection $schedules */
         $schedules->getSelect()->limit(1)->order('executed_at DESC');
         $schedules->addFieldToFilter(
             array('status'),
             array(
                 array('eq' => Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS),
-                array('eq' => Aoe_Scheduler_Model_Schedule::STATUS_REPEAT)
+                array('eq' => Aoe_Scheduler_Model_Schedule::STATUS_REPEAT),
             )
         );
 
@@ -160,6 +169,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         }
         $executedAt = $schedules->getFirstItem()->getExecutedAt();
         $value = Mage::getModel('core/date')->date(null, $executedAt);
+
         return $value;
     }
 
@@ -168,6 +178,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @param $time1
      * @param $time2
+     *
      * @return int
      */
     public function dateDiff($time1, $time2 = null)
@@ -177,6 +188,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         }
         $time1 = strtotime($time1);
         $time2 = strtotime($time2);
+
         return $time2 - $time1;
     }
 
@@ -184,21 +196,24 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * Check if job code is disabled in configuration
      *
      * @param $jobCode
+     *
      * @return bool
      */
     public function isDisabled($jobCode)
     {
         /* @var Aoe_Scheduler_Model_Job $job */
         $job = Mage::getModel('aoe_scheduler/job')->load($jobCode);
+
         return ($job->getJobCode() && !$job->getIsActive());
     }
 
     /**
      * Check if a job matches the group include/exclude lists
      *
-     * @param $jobCode
+     * @param       $jobCode
      * @param array $include
      * @param array $exclude
+     *
      * @return mixed
      */
     public function matchesIncludeExclude($jobCode, array $include, array $exclude)
@@ -228,8 +243,8 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
                     }
                 }
             }
-
         }
+
         return $cache[$key];
     }
 
@@ -273,7 +288,8 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * Send error mail
      *
      * @param Aoe_Scheduler_Model_Schedule $schedule
-     * @param $error
+     * @param                              $error
+     *
      * @return void
      */
     public function sendErrorMail(Aoe_Scheduler_Model_Schedule $schedule, $error)
@@ -284,11 +300,13 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 
         $recipients = $this->trimExplode(',', Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT), true);
 
-        $translate = Mage::getSingleton('core/translate'); /* @var Mage_Core_Model_Translate $translate */
+        $translate = Mage::getSingleton('core/translate');
+        /* @var Mage_Core_Model_Translate $translate */
         $translate->setTranslateInline(false);
 
         foreach ($recipients as $recipient) {
-            $emailTemplate = Mage::getModel('core/email_template'); /* @var Mage_Core_Model_Email_Template $emailTemplate */
+            $emailTemplate = Mage::getModel('core/email_template');
+            /* @var Mage_Core_Model_Email_Template $emailTemplate */
             $emailTemplate->setDesignConfig(array('area' => 'backend'));
             $emailTemplate->sendTransactional(
                 Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE),
@@ -306,11 +324,12 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * Get callback from runModel
      *
      * @param $runModel
+     *
      * @return array
      */
     public function getCallBack($runModel)
     {
-        if (!preg_match(Mage_Cron_Model_Observer::REGEX_RUN_MODEL, (string) $runModel, $run)) {
+        if (!preg_match(Mage_Cron_Model_Observer::REGEX_RUN_MODEL, (string)$runModel, $run)) {
             Mage::throwException(Mage::helper('cron')->__('Invalid model/method definition, expecting "model/class::method", got "' . $runModel . '" instead.'));
         }
         if (!($model = Mage::getModel($run[1]))) {
@@ -320,6 +339,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
             Mage::throwException(Mage::helper('cron')->__('Invalid callback: Method for %s::%s does not exist', $run[1], $run[2]));
         }
         $callback = array($model, $run[2]);
+
         return $callback;
     }
 
@@ -327,6 +347,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * Validate cron expression
      *
      * @param $cronExpression
+     *
      * @return bool
      */
     public function validateCronExpression($cronExpression)
@@ -338,11 +359,13 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         } catch (Exception $e) {
             return false;
         }
+
         return true;
     }
 
     /**
      * Return the current system user running this process
+     *
      * @return string
      */
     public function getRunningUser()
@@ -352,6 +375,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 
     /**
      * Return the configured cron user
+     *
      * @return string|null
      */
     public function getConfiguredUser()
@@ -361,18 +385,21 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 
     /**
      * Should processes not running the configured user be killed?
+     *
      * @return bool
      */
     public function getShouldKillOnWrongUser()
     {
-        return (bool) Mage::getStoreConfig(self::XML_PATH_KILL_ON_WRONG_USER);
+        return (bool)Mage::getStoreConfig(self::XML_PATH_KILL_ON_WRONG_USER);
     }
 
     /**
      * Check the configuration value for which user the cron should be run as, and check if it matches the actual user.
      * Skip if the warning should be ignored.
+     *
      * @param  bool $useRunningUser If true, use the user running the web server, otherwise use the last run user from
      *                              core_variable storage
+     *
      * @return bool
      */
     public function runningAsConfiguredUser($useRunningUser = true)
@@ -388,15 +415,17 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 
     /**
      * Should we warn the user if the schedule is being run as the wrong user?
+     *
      * @return bool
      */
     public function getShowUserCronMessage()
     {
-        return (bool) Mage::getStoreConfig(self::XML_PATH_SHOW_WRONG_USER_MSG);
+        return (bool)Mage::getStoreConfig(self::XML_PATH_SHOW_WRONG_USER_MSG);
     }
 
     /**
      * Get the last user who ran a schedule from core variables
+     *
      * @return string|null
      */
     public function getLastRunUser()
@@ -405,6 +434,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         if ($var) {
             return $var->getPlainValue();
         }
+
         return null;
     }
 
@@ -420,6 +450,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
             return true;
         }
         $localXmlCachePrefix = Mage::app()->getCache()->getOption('cache_id_prefix');
+
         return ($localXmlCachePrefix == $dbCachePrefix);
     }
 

@@ -31,7 +31,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job extends Mage_Adminhtml_Block_Widget_Grid
             array(
                 'label'   => $this->__('Create new job'),
                 'onclick' => "setLocation('{$this->getUrl('*/*/new')}')",
-                'class'   => 'add'
+                'class'   => 'add',
             )
         );
         $this->_addButton(
@@ -48,9 +48,9 @@ class Aoe_Scheduler_Block_Adminhtml_Job extends Mage_Adminhtml_Block_Widget_Grid
                 'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', array('section' => 'system'))}#system_cron')",
             )
         );
+
         return parent::_prepareLayout();
     }
-
 
     /**
      * Returns the CSS class for the header

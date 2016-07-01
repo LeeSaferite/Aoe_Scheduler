@@ -7,11 +7,7 @@ $installer->startSetup();
 
 $tableName = $installer->getTable('cron_schedule');
 
-try {
-    $installer->getConnection()->dropColumn($tableName, 'parameters');
-} catch (Exception $e) {
-    // ignored intentionally
-}
+$installer->getConnection()->dropColumn($tableName, 'parameters');
 
 $installer->getConnection()->addColumn(
     $tableName,

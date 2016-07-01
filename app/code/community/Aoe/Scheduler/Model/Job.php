@@ -50,6 +50,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
         if (empty($name)) {
             $name = $this->getJobCode();
         }
+
         return $name;
     }
 
@@ -87,6 +88,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
     public function getXmlJobData()
     {
         $jobData = $this->getData('xml_job_data');
+
         return (is_array($jobData) ? $jobData : array());
     }
 
@@ -106,6 +108,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
     public function getDbJobData()
     {
         $jobData = $this->getData('db_job_data');
+
         return (is_array($jobData) ? $jobData : array());
     }
 
@@ -123,6 +126,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
         if (empty($cronExpr) && $this->getScheduleCronExpr()) {
             $cronExpr = $this->getScheduleCronExpr();
         }
+
         return trim($cronExpr);
     }
 
@@ -139,6 +143,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
     public function getCallback()
     {
         $helper = Mage::helper('aoe_scheduler');
+
         /* @var Aoe_Scheduler_Helper_Data $helper */
         return $helper->getCallBack($this->getRunModel());
     }
@@ -155,6 +160,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
     {
         $xmlJobData = $this->getXmlJobData();
         $dbJobData = $this->getDbJobData();
+
         return empty($xmlJobData) && !empty($dbJobData);
     }
 
@@ -165,6 +171,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
     {
         $xmlJobData = $this->getXmlJobData();
         $dbJobData = $this->getDbJobData();
+
         return !empty($xmlJobData) && empty($dbJobData);
     }
 
@@ -175,6 +182,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
     {
         $xmlJobData = $this->getXmlJobData();
         $dbJobData = $this->getDbJobData();
+
         return !empty($xmlJobData) && !empty($dbJobData);
     }
 

@@ -7,7 +7,7 @@
 class Aoe_Scheduler_Model_Adminhtml_System_Config_Source_List_Code_Filtertype
 {
     const SELECT = 'select';
-    const TEXT   = 'text';
+    const TEXT = 'text';
 
     /**
      * Options getter

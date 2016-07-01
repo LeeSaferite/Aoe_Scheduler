@@ -22,8 +22,8 @@ class Aoe_Scheduler_Test_Helper_Data extends EcomDev_PHPUnit_Test_Case
      * @param string $user           The user that will be returned
      * @param bool   $useRunningUser Whether to use the current running user or the last run
      *
-     * @loadFixture configuredUser
-     * @loadFixture userCronMessageEnabled
+     * @loadFixture  configuredUser
+     * @loadFixture  userCronMessageEnabled
      * @dataProvider dataProvider
      */
     public function testShouldCallCorrectUserMethodAndPerformMatch($method, $user, $useRunningUser)

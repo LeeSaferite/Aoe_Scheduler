@@ -20,7 +20,6 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
         $this->setSaveParametersInSession(true);
     }
 
-
     /**
      * Preparation of the data that is displayed by the grid.
      *
@@ -31,9 +30,9 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
         /** @var Mage_Cron_Model_Resource_Schedule_Collection $collection */
         $collection = Mage::getModel('cron/schedule')->getCollection();
         $this->setCollection($collection);
+
         return parent::_prepareCollection();
     }
-
 
     /**
      * Add mass-actions to grid
@@ -58,9 +57,9 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
                 'url'   => $this->getUrl('*/*/kill'),
             )
         );
+
         return $this;
     }
-
 
     /**
      * Preparation of the requested columns of the grid
@@ -79,12 +78,12 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             )
         );
         $config = array(
-            'header'  => $this->__('Job'),
-            'index'   => 'job_code',
+            'header' => $this->__('Job'),
+            'index'  => 'job_code',
         );
         switch (Mage::getStoreConfig('system/cron/listCodeFilterType')) {
             case Aoe_Scheduler_Model_Adminhtml_System_Config_Source_List_Code_Filtertype::SELECT:
-                $config['type']    = 'options';
+                $config['type'] = 'options';
                 $config['options'] = Mage::getSingleton('aoe_scheduler/job')->getCollection()->toOptionHash('job_code', 'name');
                 break;
             case Aoe_Scheduler_Model_Adminhtml_System_Config_Source_List_Code_Filtertype::TEXT:
@@ -98,49 +97,49 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
         $this->addColumn(
             'created_at',
             array(
-                'header'         => $this->__('Created'),
-                'index'          => 'created_at',
-                'type'           => 'datetime'
+                'header' => $this->__('Created'),
+                'index'  => 'created_at',
+                'type'   => 'datetime',
             )
         );
         $this->addColumn(
             'scheduled_at',
             array(
-                'header'         => $this->__('Scheduled'),
-                'index'          => 'scheduled_at',
-                'type'           => 'datetime'
+                'header' => $this->__('Scheduled'),
+                'index'  => 'scheduled_at',
+                'type'   => 'datetime',
             )
         );
         $this->addColumn(
             'executed_at',
             array(
-                'header'         => $this->__('Executed'),
-                'index'          => 'executed_at',
-                'type'           => 'datetime'
+                'header' => $this->__('Executed'),
+                'index'  => 'executed_at',
+                'type'   => 'datetime',
             )
         );
         $this->addColumn(
             'last_seen',
             array(
-                'header'         => $this->__('Last seen'),
-                'index'          => 'last_seen',
-                'type'           => 'datetime'
+                'header' => $this->__('Last seen'),
+                'index'  => 'last_seen',
+                'type'   => 'datetime',
             )
         );
         $this->addColumn(
             'eta',
             array(
-                'header'         => $this->__('ETA'),
-                'index'          => 'eta',
-                'type'           => 'datetime'
+                'header' => $this->__('ETA'),
+                'index'  => 'eta',
+                'type'   => 'datetime',
             )
         );
         $this->addColumn(
             'finished_at',
             array(
-                'header'         => $this->__('Finished'),
-                'index'          => 'finished_at',
-                'type'           => 'datetime'
+                'header' => $this->__('Finished'),
+                'index'  => 'finished_at',
+                'type'   => 'datetime',
             )
         );
         $this->addColumn(
@@ -148,16 +147,16 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             array(
                 'header'         => $this->__('Messages'),
                 'index'          => 'messages',
-                'frame_callback' => array($this, 'decorateMessages')
+                'frame_callback' => array($this, 'decorateMessages'),
             )
         );
         $this->addColumn(
             'memory_usage',
             array(
-                'header'         => $this->__('Memory Usage'),
-                'index'          => 'memory_usage',
-                'type'           => 'number',
-                'renderer'       => 'aoe_scheduler/adminhtml_scheduler_renderer_memory',
+                'header'   => $this->__('Memory Usage'),
+                'index'    => 'memory_usage',
+                'type'     => 'number',
+                'renderer' => 'aoe_scheduler/adminhtml_scheduler_renderer_memory',
             )
         );
         $this->addColumn(
@@ -172,7 +171,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             array(
                 'header' => $this->__('Pid'),
                 'index'  => 'pid',
-                'width' => '50',
+                'width'  => '50',
             )
         );
         $this->addColumn(
@@ -182,13 +181,12 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
                 'index'          => 'status',
                 'frame_callback' => array($viewHelper, 'decorateStatus'),
                 'type'           => 'options',
-                'options'        => Mage::getSingleton('cron/schedule')->getAllStatuses()
+                'options'        => Mage::getSingleton('cron/schedule')->getAllStatuses(),
             )
         );
 
         return parent::_prepareColumns();
     }
-
 
     /**
      * Decorate message
@@ -205,9 +203,9 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             $return .= '<a href="#" onclick="$(\'messages_' . $row->getScheduleId() . '\').toggle(); return false;">' . $this->__('Message') . '</a>';
             $return .= '<div class="schedule-message" id="messages_' . $row->getScheduleId() . '" style="display: none; width: 300px; overflow: auto; font-size: small;"><pre>' . $value . '</pre></div>';
         }
+
         return $return;
     }
-
 
     /**
      * Helper function to do after load modifications
@@ -219,7 +217,6 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
         $this->getCollection()->walk('afterLoad');
         parent::_afterLoadCollection();
     }
-
 
     /**
      * Helper function to add store filter condition
@@ -236,7 +233,6 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
         }
         $this->getCollection()->addStoreFilter($value);
     }
-
 
     /**
      * Helper function to receive grid functionality urls for current grid

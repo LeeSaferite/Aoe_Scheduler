@@ -68,7 +68,6 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
         return Mage::registry('current_job_instance');
     }
 
-
     /**
      * Prepare form before rendering HTML
      *
@@ -81,7 +80,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             array(
                 'id'     => 'edit_form',
                 'action' => $this->getData('action'),
-                'method' => 'post'
+                'method' => 'post',
             )
         );
 
@@ -164,7 +163,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
                 'required'           => true,
                 'options'            => array(
                     0 => $this->__('Disabled'),
-                    1 => $this->__('Enabled')
+                    1 => $this->__('Enabled'),
                 ),
                 'after_element_html' => $this->getOriginalValueSnippetFlag($job, 'is_active', 'Enabled', 'Disabled'),
             )
@@ -281,6 +280,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
     protected function _initFormValues()
     {
         $this->getForm()->addValues($this->getJob()->getData());
+
         return parent::_initFormValues();
     }
 }

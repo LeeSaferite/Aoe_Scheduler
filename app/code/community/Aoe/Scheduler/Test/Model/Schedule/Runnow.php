@@ -6,7 +6,8 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
     public function setup()
     {
         // delete all schedules
-        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
+        /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
         $scheduleManager->deleteAll();
     }
 
@@ -189,6 +190,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
 
     /**
      * Centralized logic for running unit test against multiple fixtures
+     *
      * @return Aoe_Scheduler_Model_Schedule
      */
     protected function _performConfiguredUserTest()
@@ -201,6 +203,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
         $result = $schedule->setJobCode('aoescheduler_testtask')->runNow(false);
 
         $this->assertInstanceOf('Aoe_Scheduler_Model_Schedule', $result);
+
         return $result;
     }
 }

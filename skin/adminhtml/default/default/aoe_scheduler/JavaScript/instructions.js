@@ -1,5 +1,5 @@
 $.noConflict();
-jQuery(function() {
+jQuery(function () {
     function updateInstructions() {
         jQuery('.croncommand').hide();
         jQuery('.configuration input').removeAttr("disabled");
@@ -19,6 +19,7 @@ jQuery(function() {
         jQuery('.mailto').toggle(jQuery('.configuration input[name="add-mailto"]').is(':checked'));
 
     }
+
     updateInstructions();
     jQuery('.configuration input').change(updateInstructions);
 });

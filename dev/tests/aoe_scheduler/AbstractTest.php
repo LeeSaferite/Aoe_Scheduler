@@ -9,20 +9,23 @@ abstract class AbstractTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        require_once(MAGENTO_ROOT . '/app/Mage.php' );
+        require_once(MAGENTO_ROOT . '/app/Mage.php');
         Mage::app();
 
         // delete all schedules
-        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
+        /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
         $scheduleManager->deleteAll();
     }
 
     public function tearDown()
     {
-        foreach ($this->jobs as $job) { /* @var Aoe_Scheduler_Model_Job $job */
+        foreach ($this->jobs as $job) {
+            /* @var Aoe_Scheduler_Model_Job $job */
             $job->delete();
         }
-        foreach ($this->schedules as $schedule) { /* @var Aoe_Scheduler_Model_Job $schedule */
+        foreach ($this->schedules as $schedule) {
+            /* @var Aoe_Scheduler_Model_Job $schedule */
             $schedule->delete();
         }
         parent::tearDown();
@@ -46,35 +49,50 @@ abstract class AbstractTest extends PHPUnit_Framework_TestCase
     public function runCronAlwaysProvider()
     {
         return array(
-            array(function () {
-                // trigger dispatch
-                $observer = Mage::getModel('aoe_scheduler/observer'); /* @var Aoe_Scheduler_Model_Observer $observer */
-                $observer->dispatchAlways(new Varien_Event_Observer());
-            }),
-            array(function () {
-                shell_exec('/usr/bin/php ' . Mage::getBaseDir() . '/cron.php');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh cron.php -mdefault 1');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action cron --mode default');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh --mode default');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            })
+            array(
+                function () {
+                    // trigger dispatch
+                    $observer = Mage::getModel('aoe_scheduler/observer');
+                    /* @var Aoe_Scheduler_Model_Observer $observer */
+                    $observer->dispatchAlways(new Varien_Event_Observer());
+                },
+            ),
+            array(
+                function () {
+                    shell_exec('/usr/bin/php ' . Mage::getBaseDir() . '/cron.php');
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                },
+            ),
+            array(
+                function () {
+                    shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh');
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                },
+            ),
+            array(
+                function () {
+                    shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh cron.php -mdefault 1');
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                },
+            ),
+            array(
+                function () {
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action cron --mode default');
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                },
+            ),
+            array(
+                function () {
+                    shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh');
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                },
+            ),
+            array(
+                function () {
+                    shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh --mode default');
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                },
+            ),
         );
     }
 
@@ -86,35 +104,50 @@ abstract class AbstractTest extends PHPUnit_Framework_TestCase
     public function runCronDefaultProvider()
     {
         return array(
-            array(function () {
-                // trigger dispatch
-                $observer = Mage::getModel('aoe_scheduler/observer'); /* @var Aoe_Scheduler_Model_Observer $observer */
-                $observer->dispatch(new Varien_Event_Observer());
-            }),
-            array(function () {
-                shell_exec('/usr/bin/php ' . Mage::getBaseDir() . '/cron.php');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh cron.php -mdefault 1');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action cron --mode default');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh --mode default');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            })
+            array(
+                function () {
+                    // trigger dispatch
+                    $observer = Mage::getModel('aoe_scheduler/observer');
+                    /* @var Aoe_Scheduler_Model_Observer $observer */
+                    $observer->dispatch(new Varien_Event_Observer());
+                },
+            ),
+            array(
+                function () {
+                    shell_exec('/usr/bin/php ' . Mage::getBaseDir() . '/cron.php');
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                },
+            ),
+            array(
+                function () {
+                    shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh');
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                },
+            ),
+            array(
+                function () {
+                    shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh cron.php -mdefault 1');
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                },
+            ),
+            array(
+                function () {
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action cron --mode default');
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                },
+            ),
+            array(
+                function () {
+                    shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh');
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                },
+            ),
+            array(
+                function () {
+                    shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh --mode default');
+                    shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                },
+            ),
         );
     }
 }

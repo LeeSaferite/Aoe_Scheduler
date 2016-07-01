@@ -18,7 +18,6 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler extends Mage_Adminhtml_Block_Widge
         parent::__construct();
     }
 
-
     /**
      * Prepare layout
      *
@@ -41,9 +40,9 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler extends Mage_Adminhtml_Block_Widge
                 'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', array('section' => 'system'))}#system_cron')",
             )
         );
+
         return parent::_prepareLayout();
     }
-
 
     /**
      * Returns the CSS class for the header

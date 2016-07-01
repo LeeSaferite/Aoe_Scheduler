@@ -4,7 +4,7 @@
  * Graceful Dead Helper
  *
  * @author Fabrizio Branca
- * @since 2015-07-02
+ * @since  2015-07-02
  */
 class Aoe_Scheduler_Helper_GracefulDead
 {
@@ -28,7 +28,8 @@ class Aoe_Scheduler_Helper_GracefulDead
 
     public static function beforeDying($message = null, $exit = false)
     {
-        $schedule = Mage::registry('currently_running_schedule');  /* @var Aoe_Scheduler_Model_Schedule $schedule */
+        $schedule = Mage::registry('currently_running_schedule');
+        /* @var Aoe_Scheduler_Model_Schedule $schedule */
         if ($schedule !== null) {
             if ($message) {
                 $schedule->addMessages($message);

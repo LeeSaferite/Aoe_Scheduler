@@ -30,6 +30,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
                 )
             );
         }
+
         return $resource;
     }
 
@@ -115,6 +116,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
             $this->clear();
             $this->whiteList = $list;
         }
+
         return $this;
     }
 
@@ -139,6 +141,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
             $this->clear();
             $this->blackList = $list;
         }
+
         return $this;
     }
 
@@ -162,6 +165,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
             $this->clear();
             $this->activeOnly = $flag;
         }
+
         return $this;
     }
 
@@ -185,6 +189,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
             $this->clear();
             $this->dbOnly = $flag;
         }
+
         return $this;
     }
 
@@ -243,6 +248,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
             /** @var Aoe_Scheduler_Model_Job $item */
             $values[] = $item->getDataUsingMethod($column);
         }
+
         return $values;
     }
 
@@ -263,6 +269,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
                 $items[] = $item;
             }
         }
+
         return $items;
     }
 
@@ -282,6 +289,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
                 return $item;
             }
         }
+
         return null;
     }
 
@@ -299,6 +307,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
             foreach ($key as $k => $v) {
                 $this->setDataToAll($k, $v);
             }
+
             return $this;
         }
 
@@ -319,7 +328,6 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
     {
         return $this->_toOptionHash($valueField, $labelField);
     }
-
 
     /**
      * Convert items array to array for select options
@@ -344,9 +352,9 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
             }
             $options[] = $data;
         }
+
         return $options;
     }
-
 
     /**
      * Convert items array to hash for select options
@@ -363,7 +371,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
             /** @var Aoe_Scheduler_Model_Job $item */
             $res[$item->getDataUsingMethod($valueField)] = $item->getDataUsingMethod($labelField);
         }
+
         return $res;
     }
-
 }

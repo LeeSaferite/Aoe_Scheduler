@@ -4,7 +4,7 @@
  * Schedule Manager
  *
  * @author Fabrizio Branca
- * @since 2014-08-14
+ * @since  2014-08-14
  */
 class Aoe_Scheduler_Model_ScheduleManager
 {
@@ -73,14 +73,17 @@ class Aoe_Scheduler_Model_ScheduleManager
      * (Instead of reusing existing one - which results in loosing the history - create a new one every time)
      *
      * @param $jobCode
+     *
      * @return Aoe_Scheduler_Model_Schedule|false
      */
-    public function getScheduleForAlwaysJob($jobCode, $reason=null)
+    public function getScheduleForAlwaysJob($jobCode, $reason = null)
     {
-        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var Aoe_Scheduler_Model_ProcessManager $processManager */
+        $processManager = Mage::getModel('aoe_scheduler/processManager');
+        /* @var Aoe_Scheduler_Model_ProcessManager $processManager */
         if (!$processManager->isJobCodeRunning($jobCode)) {
             $ts = strftime('%Y-%m-%d %H:%M:00', time());
-            $schedule = Mage::getModel('cron/schedule'); /* @var Aoe_Scheduler_Model_Schedule $schedule */
+            $schedule = Mage::getModel('cron/schedule');
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
             $schedule
                 ->setScheduledReason($reason ? $reason : Aoe_Scheduler_Model_Schedule::REASON_ALWAYS)
                 ->setJobCode($jobCode)
@@ -88,8 +91,10 @@ class Aoe_Scheduler_Model_ScheduleManager
                 ->setCreatedAt($ts)
                 ->setScheduledAt($ts)
                 ->save();
+
             return $schedule;
         }
+
         return false;
     }
 
@@ -104,7 +109,8 @@ class Aoe_Scheduler_Model_ScheduleManager
         $conn = Mage::getSingleton('core/resource')->getConnection('core_read');
 
         // TODO: Direct sql is not nice. We can do better... :)
-        $results = $conn->fetchAll("
+        $results = $conn->fetchAll(
+            "
 			SELECT
 				GROUP_CONCAT(schedule_id) AS ids,
 				CONCAT(job_code, scheduled_at) AS jobkey,
@@ -113,7 +119,8 @@ class Aoe_Scheduler_Model_ScheduleManager
 			WHERE status = '" . Aoe_Scheduler_Model_Schedule::STATUS_PENDING . "'
 			GROUP BY jobkey
 			HAVING qty > 1;
-		");
+		"
+        );
         foreach ($results as $row) {
             $ids = explode(',', $row['ids']);
             $removeIds = array_slice($ids, 1);
@@ -162,7 +169,8 @@ class Aoe_Scheduler_Model_ScheduleManager
                 ->setOrder('scheduled_at', 'desc')
                 ->load();
 
-            $newestSchedule = $history->getFirstItem(); /* @var Aoe_Scheduler_Model_Schedule $newestSchedule */
+            $newestSchedule = $history->getFirstItem();
+            /* @var Aoe_Scheduler_Model_Schedule $newestSchedule */
 
             $duration = microtime(true) - $startTime;
             Mage::log('Generated schedule. Newest task is scheduled at "' . $newestSchedule->getScheduledAt() . '". (Duration: ' . round($duration, 2) . ' sec)', null, $logFile);
@@ -175,6 +183,7 @@ class Aoe_Scheduler_Model_ScheduleManager
      * Flushed all future pending schedules.
      *
      * @param string $jobCode
+     *
      * @return $this
      */
     public function flushSchedules($jobCode = null)
@@ -192,6 +201,7 @@ class Aoe_Scheduler_Model_ScheduleManager
             $schedule->delete();
         }
         Mage::app()->saveCache(0, Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
+
         return $this;
     }
 
@@ -204,10 +214,12 @@ class Aoe_Scheduler_Model_ScheduleManager
     {
         /* @var Mage_Cron_Model_Resource_Schedule_Collection $schedules */
         $schedules = Mage::getModel('cron/schedule')->getCollection();
-        foreach ($schedules as $key => $schedule) { /* @var Aoe_Scheduler_Model_Schedule $schedule */
+        foreach ($schedules as $key => $schedule) {
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
             $schedule->delete();
         }
         Mage::app()->saveCache(0, Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
+
         return $this;
     }
 
@@ -231,16 +243,17 @@ class Aoe_Scheduler_Model_ScheduleManager
         }
 
         $now = time();
-        $scheduleAheadFor = Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_SCHEDULE_AHEAD_FOR)*60;
+        $scheduleAheadFor = Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_SCHEDULE_AHEAD_FOR) * 60;
         $timeAhead = $now + $scheduleAheadFor;
 
-        $schedule = Mage::getModel('cron/schedule'); /* @var Aoe_Scheduler_Model_Schedule $schedule */
+        $schedule = Mage::getModel('cron/schedule');
+        /* @var Aoe_Scheduler_Model_Schedule $schedule */
         $schedule->initializeFromJob($job);
         $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_GENERATESCHEDULES);
 
         for ($time = $now + 60; $time < $timeAhead; $time += 60) {
             $ts = strftime('%Y-%m-%d %H:%M:00', $time);
-            if (!empty($exists[$job->getJobCode().'/'.$ts])) {
+            if (!empty($exists[$job->getJobCode() . '/' . $ts])) {
                 // already scheduled
                 continue;
             }
@@ -271,28 +284,34 @@ class Aoe_Scheduler_Model_ScheduleManager
         $startTime = microtime(true);
 
         $history = Mage::getModel('cron/schedule')->getCollection()
-            ->addFieldToFilter('status', array('nin' => array(
-                Aoe_Scheduler_Model_Schedule::STATUS_PENDING,
-                Aoe_Scheduler_Model_Schedule::STATUS_RUNNING
-            )))
+            ->addFieldToFilter(
+                'status',
+                array(
+                    'nin' => array(
+                        Aoe_Scheduler_Model_Schedule::STATUS_PENDING,
+                        Aoe_Scheduler_Model_Schedule::STATUS_RUNNING,
+                    ),
+                )
+            )
             ->load();
 
         $historyLifetimes = array(
-            Aoe_Scheduler_Model_Schedule::STATUS_KILLED =>          Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS)*60,
-            Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED =>     Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
-            Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS)*60,
-            Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS =>         Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS)*60,
-            Aoe_Scheduler_Model_Schedule::STATUS_REPEAT =>          Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS)*60,
-            Aoe_Scheduler_Model_Schedule::STATUS_MISSED =>          Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
-            Aoe_Scheduler_Model_Schedule::STATUS_SKIP_PILINGUP =>   Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
-            Aoe_Scheduler_Model_Schedule::STATUS_ERROR =>           Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
-            Aoe_Scheduler_Model_Schedule::STATUS_DIED =>            Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
-            Aoe_Scheduler_Model_Schedule::STATUS_SKIP_LOCKED =>     Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
-            Aoe_Scheduler_Model_Schedule::STATUS_SKIP_OTHERJOBRUNNING => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
+            Aoe_Scheduler_Model_Schedule::STATUS_KILLED               => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS) * 60,
+            Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED          => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE) * 60,
+            Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING      => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS) * 60,
+            Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS              => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS) * 60,
+            Aoe_Scheduler_Model_Schedule::STATUS_REPEAT               => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS) * 60,
+            Aoe_Scheduler_Model_Schedule::STATUS_MISSED               => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE) * 60,
+            Aoe_Scheduler_Model_Schedule::STATUS_SKIP_PILINGUP        => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE) * 60,
+            Aoe_Scheduler_Model_Schedule::STATUS_ERROR                => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE) * 60,
+            Aoe_Scheduler_Model_Schedule::STATUS_DIED                 => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE) * 60,
+            Aoe_Scheduler_Model_Schedule::STATUS_SKIP_LOCKED          => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE) * 60,
+            Aoe_Scheduler_Model_Schedule::STATUS_SKIP_OTHERJOBRUNNING => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE) * 60,
         );
 
         $now = time();
-        foreach ($history->getIterator() as $record) { /* @var Aoe_Scheduler_Model_Schedule $record */
+        foreach ($history->getIterator() as $record) {
+            /* @var Aoe_Scheduler_Model_Schedule $record */
             if (isset($historyLifetimes[$record->getStatus()])) {
                 if (strtotime($record->getExecutedAt()) < $now - $historyLifetimes[$record->getStatus()]) {
                     $record->delete();
@@ -303,7 +322,6 @@ class Aoe_Scheduler_Model_ScheduleManager
         // save time history cleanup was ran with no expiration
         Mage::app()->saveCache(time(), Mage_Cron_Model_Observer::CACHE_KEY_LAST_HISTORY_CLEANUP_AT, array('crontab'), null);
 
-
         // delete successful tasks (beyond the configured max number of tasks to keep)
         $maxNo = Mage::getStoreConfig(self::XML_PATH_HISTORY_MAXNO);
         if ($maxNo) {
@@ -312,13 +330,14 @@ class Aoe_Scheduler_Model_ScheduleManager
                     array('status'),
                     array(
                         array('eq' => Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS),
-                        array('eq' => Aoe_Scheduler_Model_Schedule::STATUS_REPEAT)
+                        array('eq' => Aoe_Scheduler_Model_Schedule::STATUS_REPEAT),
                     )
                 )
                 ->setOrder('finished_at', 'desc')
                 ->load();
             $counter = array();
-            foreach ($history->getIterator() as $record) { /* @var Aoe_Scheduler_Model_Schedule $record */
+            foreach ($history->getIterator() as $record) {
+                /* @var Aoe_Scheduler_Model_Schedule $record */
                 $jobCode = $record->getJobCode();
                 if (!isset($counter[$jobCode])) {
                     $counter[$jobCode] = 0;
@@ -366,15 +385,16 @@ class Aoe_Scheduler_Model_ScheduleManager
         $gaps = array();
         foreach ($lastRuns as $index => $run) {
             if ($index > 0) {
-                $gaps[$index] = intval($lastRuns[$index]) - intval($lastRuns[$index-1]);
+                $gaps[$index] = intval($lastRuns[$index]) - intval($lastRuns[$index - 1]);
             }
         }
+
         return array(
             'average' => round((array_sum($gaps) / count($gaps)) / 60, 2),
-            'max' => round(max($gaps) / 60, 2),
-            'min' => round(min($gaps) / 60, 2),
-            'count' => count($gaps),
-            'last' => end($lastRuns)
+            'max'     => round(max($gaps) / 60, 2),
+            'min'     => round(min($gaps) / 60, 2),
+            'count'   => count($gaps),
+            'last'    => end($lastRuns),
         );
     }
 }

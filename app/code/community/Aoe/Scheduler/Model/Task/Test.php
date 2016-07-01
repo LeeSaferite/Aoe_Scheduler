@@ -4,7 +4,7 @@
  * Test Task
  *
  * @author Fabrizio Branca
- * @since 2013-10-10
+ * @since  2013-10-10
  */
 class Aoe_Scheduler_Model_Task_Test
 {
@@ -14,6 +14,7 @@ class Aoe_Scheduler_Model_Task_Test
      * Behavior can be controlled via parameters
      *
      * @param Aoe_Scheduler_Model_Schedule $schedule
+     *
      * @return string
      * @throws Exception
      */
@@ -52,7 +53,6 @@ class Aoe_Scheduler_Model_Task_Test
         if ($parameters && $parameters['outcome'] == 'exception') {
             throw new Exception('This is a dummy exception');
         }
-
 
         // Simulating ETA;
 //        $starttime = time();

@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Job edit container
  *
  * @author Fabrizio Branca
- * @since 2014-08-09
+ * @since  2014-08-09
  */
 class Aoe_Scheduler_Block_Adminhtml_Job_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
@@ -41,7 +42,6 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit extends Mage_Adminhtml_Block_Widget
         return Mage::registry('current_job_instance');
     }
 
-
     /**
      * Return translated header text depending on creating/editing action
      *
@@ -63,6 +63,6 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit extends Mage_Adminhtml_Block_Widget
      */
     public function getSaveUrl()
     {
-        return $this->getUrl('*/*/save', array('_current'=>true, 'back'=>null));
+        return $this->getUrl('*/*/save', array('_current' => true, 'back' => null));
     }
 }

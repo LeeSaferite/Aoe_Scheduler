@@ -15,6 +15,6 @@ class Aoe_Scheduler_Helper_Compatibility extends Mage_Core_Helper_Abstract
 
     public function oldConfigXmlExists()
     {
-        return is_file($this->getLocalCodeDir()  . DS . 'etc' . DS . 'config.xml');
+        return is_file($this->getLocalCodeDir() . DS . 'etc' . DS . 'config.xml');
     }
 }

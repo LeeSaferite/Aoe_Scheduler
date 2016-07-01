@@ -59,7 +59,7 @@ $this->getConnection()->addColumn(
         'unsigned' => true,
         'nullable' => true,
         'default'  => null,
-        'comment'  => 'Scheduled by'
+        'comment'  => 'Scheduled by',
     )
 );
 
@@ -71,7 +71,7 @@ $this->getConnection()->addColumn(
         'length'   => 256,
         'nullable' => true,
         'default'  => null,
-        'comment'  => 'Scheduled Reason'
+        'comment'  => 'Scheduled Reason',
     )
 );
 

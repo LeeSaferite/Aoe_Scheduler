@@ -27,6 +27,7 @@ class Aoe_Scheduler_Model_Resource_Schedule_Collection extends Mage_Cron_Model_R
     {
         $tags = parent::_getCacheTags();
         $tags[] = 'SCHEDULER_SCHEDULES';
+
         return $tags;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Scheduler controller
  *
@@ -48,7 +49,8 @@ class Aoe_Scheduler_Adminhtml_SchedulerController extends Aoe_Scheduler_Controll
     {
         $ids = $this->getRequest()->getParam('schedule_ids');
         foreach ($ids as $id) {
-            $schedule = Mage::getModel('cron/schedule'); /* @var Aoe_Scheduler_Model_Schedule $schedule */
+            $schedule = Mage::getModel('cron/schedule');
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
             $schedule->load($id)->requestKill();
         }
         $message = $this->__('Kill requests saved for task(s) "%s" (will be killed via cron)', implode(', ', $ids));
@@ -93,7 +95,7 @@ class Aoe_Scheduler_Adminhtml_SchedulerController extends Aoe_Scheduler_Controll
     {
         $user = $this->getRequest()->getParam('user');
         Mage::getModel('core/config')
-            ->saveConfig(Aoe_Scheduler_Helper_Data::XML_PATH_CRON_USER, (string) $user);
+            ->saveConfig(Aoe_Scheduler_Helper_Data::XML_PATH_CRON_USER, (string)$user);
 
         $this->_getSession()->addSuccess($this->__('Configured cron user updated to be "%s"', $user));
         $this->_redirectReferer();
