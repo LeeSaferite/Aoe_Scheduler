@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="AOE-Mage1">
+<ruleset name="AOE-Mage1-1.0.0">
     <description>Magento extension ruleset based on PSR-2 but modified for Magento 1</description>
 
     <rule ref="PSR2">
@@ -18,10 +18,37 @@
         <exclude name="Generic.Files.LineLength"/>
     </rule>
 
+    <!-- Don't error on line length, just warn -->
     <rule ref="Generic.Files.LineLength">
         <properties>
             <property name="lineLimit" value="200"/>
             <property name="absoluteLineLimit" value=""/>
         </properties>
     </rule>
+
+    <!-- Enforce short array syntax -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+    <!-- Enforce trailing comma on multi-line array -->
+    <rule ref="Squiz.Arrays.ArrayDeclaration">
+        <exclude name="Squiz.Arrays.ArrayDeclaration.SingleLineNotAllowed"/>
+        <exclude name="Squiz.Arrays.ArrayDeclaration.KeyNotAligned"/>
+        <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNotAligned"/>
+        <exclude name="Squiz.Arrays.ArrayDeclaration.CloseBraceNotAligned"/>
+    </rule>
+
+    <!-- Warn about unfinished business -->
+    <rule ref="Generic.Commenting.Fixme"/>
+    <rule ref="Generic.Commenting.Todo"/>
+
+    <!-- Check for duplicate class names -->
+    <rule ref="Generic.Classes.DuplicateClassName"/>
+
+    <!-- Perform some basic code analysis -->
+    <rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
+    <rule ref="Generic.CodeAnalysis.UnconditionalIfStatement"/>
+    <rule ref="Generic.CodeAnalysis.ForLoopShouldBeWhileLoop"/>
+    <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
+    <rule ref="Generic.CodeAnalysis.ForLoopWithTestFunctionCall"/>
+    <rule ref="Generic.CodeAnalysis.JumbledIncrementer"/>
 </ruleset>
