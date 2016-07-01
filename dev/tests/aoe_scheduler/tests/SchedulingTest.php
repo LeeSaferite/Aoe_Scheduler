@@ -39,7 +39,7 @@ class SchedulingTest extends AbstractTest
         $scheduleManager->deleteAll();
 
         // fake schedule generation to avoid it to be generated on the next run:
-        Mage::app()->saveCache(time(), Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
+        Mage::app()->saveCache(time(), Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, ['crontab'], null);
 
         $schedule = Mage::getModel('cron/schedule');
         /* @var Aoe_Scheduler_Model_Schedule $schedule */

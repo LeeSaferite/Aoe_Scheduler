@@ -4,8 +4,8 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
 {
     protected $model;
     protected $resourceModel;
-    protected $whiteList = array();
-    protected $blackList = array();
+    protected $whiteList = [];
+    protected $blackList = [];
     protected $activeOnly = false;
     protected $dbOnly = false;
 
@@ -243,7 +243,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
      */
     public function getColumnValues($column)
     {
-        $values = array();
+        $values = [];
         foreach ($this as $item) {
             /** @var Aoe_Scheduler_Model_Job $item */
             $values[] = $item->getDataUsingMethod($column);
@@ -262,7 +262,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
      */
     public function getItemsByColumnValue($column, $value)
     {
-        $items = array();
+        $items = [];
         foreach ($this as $item) {
             /** @var Aoe_Scheduler_Model_Job $item */
             if ($item->getDataUsingMethod($column) == $value) {
@@ -319,7 +319,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
         return $this;
     }
 
-    public function toOptionArray($valueField = 'job_code', $labelField = 'name', array $additional = array())
+    public function toOptionArray($valueField = 'job_code', $labelField = 'name', array $additional = [])
     {
         return $this->_toOptionArray($valueField, $labelField, $additional);
     }
@@ -337,16 +337,16 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
      *
      * @return  array
      */
-    protected function _toOptionArray($valueField = 'job_code', $labelField = 'name', $additional = array())
+    protected function _toOptionArray($valueField = 'job_code', $labelField = 'name', $additional = [])
     {
-        $options = array();
+        $options = [];
 
         $additional['value'] = $valueField;
         $additional['label'] = $labelField;
 
         foreach ($this as $item) {
             /** @var Aoe_Scheduler_Model_Job $item */
-            $data = array();
+            $data = [];
             foreach ($additional as $code => $field) {
                 $data[$code] = $item->getDataUsingMethod($field);
             }
@@ -366,7 +366,7 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
      */
     protected function _toOptionHash($valueField = 'job_code', $labelField = 'name')
     {
-        $res = array();
+        $res = [];
         foreach ($this as $item) {
             /** @var Aoe_Scheduler_Model_Job $item */
             $res[$item->getDataUsingMethod($valueField)] = $item->getDataUsingMethod($labelField);

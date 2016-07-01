@@ -26,7 +26,7 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
     /**
      * @var array schedules
      */
-    protected $schedules = array();
+    protected $schedules = [];
 
     /**
      * Constructor
@@ -50,17 +50,17 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
         $this->removeButton('add');
         $this->_addButton(
             'add_new',
-            array(
+            [
                 'label'   => $this->__('Generate Schedule'),
                 'onclick' => "setLocation('{$this->getUrl('*/*/generateSchedule')}')",
-            )
+            ]
         );
         $this->_addButton(
             'configure',
-            array(
+            [
                 'label'   => $this->__('Cron Configuration'),
-                'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', array('section' => 'system'))}#system_cron')",
-            )
+                'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', ['section' => 'system'])}#system_cron')",
+            ]
         );
 
         return parent::_prepareLayout();
@@ -241,7 +241,7 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
     {
         $html = parent::_toHtml();
         if (!$html && !Mage::getStoreConfigFlag('dev/template/allow_symlink')) {
-            $url = $this->getUrl('adminhtml/system_config/edit', array('section' => 'dev')) . '#dev_template';
+            $url = $this->getUrl('adminhtml/system_config/edit', ['section' => 'dev']) . '#dev_template';
             $html = $this->__(
                 'Warning: You installed Aoe_Scheduler using symlinks (e.g. via modman), but forgot to allow symlinks for template files! Please go to <a href="%s">System > Configuration > Advanced > Developer > Template Settings</a> and set "Allow Symlinks" to "yes"',
                 $url

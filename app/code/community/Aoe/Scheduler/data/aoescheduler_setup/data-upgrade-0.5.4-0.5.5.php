@@ -9,12 +9,12 @@ if ($node) {
     foreach ($codes as $code) {
         $this->getConnection()->insertOnDuplicate(
             $this->getTable('core/config_data'),
-            array(
+            [
                 'scope'    => 'default',
                 'scope_id' => 0,
                 'path'     => 'crontab/jobs/' . $code . '/is_active',
                 'value'    => 0,
-            )
+            ]
         );
     }
 }
@@ -22,9 +22,9 @@ if ($node) {
 // Remove old config setting
 $this->getConnection()->delete(
     $this->getTable('core/config_data'),
-    array(
+    [
         'scope = ?'    => 'default',
         'scope_id = ?' => 0,
         'path = ?'     => 'system/cron/disabled_crons',
-    )
+    ]
 );

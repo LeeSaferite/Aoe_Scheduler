@@ -16,9 +16,9 @@ class Aoe_Scheduler_Model_Adminhtml_System_Config_Source_List_Code_Filtertype
      */
     public function toOptionArray()
     {
-        return array(
-            array('value' => self::SELECT, 'label' => Mage::helper('adminhtml')->__('Select')),
-            array('value' => self::TEXT, 'label' => Mage::helper('adminhtml')->__('Text')),
-        );
+        return [
+            ['value' => self::SELECT, 'label' => Mage::helper('adminhtml')->__('Select')],
+            ['value' => self::TEXT, 'label' => Mage::helper('adminhtml')->__('Text')],
+        ];
     }
 }

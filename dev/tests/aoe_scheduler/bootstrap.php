@@ -7,7 +7,7 @@ if (empty($magentoRoot)) {
     $i = 0;
     $prefix = '';
     do {
-        foreach (array('app/Mage.php', 'htdocs/app/Mage.php') as $file) {
+        foreach (['app/Mage.php', 'htdocs/app/Mage.php'] as $file) {
             if (is_file($prefix . $file)) {
                 break 2;
             }

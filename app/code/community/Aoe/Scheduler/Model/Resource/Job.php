@@ -6,7 +6,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
     protected $loaded = false;
 
     /** @var Aoe_Scheduler_Model_Job[] */
-    protected $jobs = array();
+    protected $jobs = [];
 
     /**
      * Resource initialization
@@ -18,9 +18,9 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
 
     public function getJobCodes()
     {
-        $codes = array();
+        $codes = [];
 
-        $nodes = array('crontab/jobs', 'default/crontab/jobs');
+        $nodes = ['crontab/jobs', 'default/crontab/jobs'];
         foreach ($nodes as $node) {
             $jobs = Mage::getConfig()->getNode($node);
             if ($jobs && $jobs->hasChildren()) {
@@ -59,10 +59,10 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         }
 
         if (empty($value)) {
-            $this->setModelFromJobData($object, array());
+            $this->setModelFromJobData($object, []);
             $object->setJobCode('');
-            $object->setXmlJobData(array());
-            $object->setDbJobData(array());
+            $object->setXmlJobData([]);
+            $object->setDbJobData([]);
 
             return $this;
         }
@@ -134,33 +134,33 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         foreach ($updateValues as $k => $v) {
             $adapter->update(
                 $this->getMainTable(),
-                array('value' => $v),
-                array(
+                ['value' => $v],
+                [
                     'scope = ?'    => 'default',
                     'scope_id = ?' => 0,
                     'path = ?'     => $pathPrefix . $k,
-                )
+                ]
             );
         }
         foreach ($insertValues as $k => $v) {
             $adapter->insert(
                 $this->getMainTable(),
-                array(
+                [
                     'scope'    => 'default',
                     'scope_id' => 0,
                     'path'     => $pathPrefix . $k,
                     'value'    => $v,
-                )
+                ]
             );
         }
         foreach ($deleteValues as $k => $v) {
             $adapter->delete(
                 $this->getMainTable(),
-                array(
+                [
                     'scope = ?'    => 'default',
                     'scope_id = ?' => 0,
                     'path = ?'     => $pathPrefix . $k,
-                )
+                ]
             );
         }
 
@@ -202,11 +202,11 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         $adapter = $this->_getWriteAdapter();
         $adapter->delete(
             $this->getMainTable(),
-            array(
+            [
                 'path LIKE ?'  => $this->getJobSearchPath($object->getJobCode()),
                 'scope = ?'    => 'default',
                 'scope_id = ?' => 0,
-            )
+            ]
         );
 
         Mage::getConfig()->reinit();
@@ -223,19 +223,19 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
 
     protected function getJobSearchPath($jobCode)
     {
-        return str_replace(array('\\', '%', '_'), array('\\\\', '\\%', '\\_'), $this->getJobPathPrefix($jobCode)) . '/%';
+        return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $this->getJobPathPrefix($jobCode)) . '/%';
     }
 
     private function getJobDataFromConfig($jobCode, $useDefaultScope = false, $default = null)
     {
         $config = Mage::getConfig()->getNode(($useDefaultScope ? 'default/' : '') . $this->getJobPathPrefix($jobCode));
         if (!$config) {
-            return array();
+            return [];
         }
 
         $config = $config->asArray();
 
-        $values = array();
+        $values = [];
 
         if (isset($config['name'])) {
             $values['name'] = $config['name'];
@@ -299,13 +299,13 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         $adapter = $this->_getWriteAdapter();
 
         $select = $adapter->select()
-            ->from($this->getMainTable(), array('path', 'value'))
+            ->from($this->getMainTable(), ['path', 'value'])
             ->where('scope = ?', 'default')
             ->where('scope_id = ?', '0')
             ->where('path LIKE ?', $this->getJobSearchPath($jobCode));
 
         $pathPrefix = $this->getJobPathPrefix($jobCode) . '/';
-        $values = array();
+        $values = [];
         foreach ($adapter->query($select)->fetchAll() as $row) {
             if (strpos($row['path'], $pathPrefix) === 0) {
                 $values[substr($row['path'], strlen($pathPrefix))] = $row['value'];
@@ -320,7 +320,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
 
     public function getJobDataFromModel(Aoe_Scheduler_Model_Job $job)
     {
-        $values = array(
+        $values = [
             'name'                 => $job->getName(),
             'description'          => $job->getDescription(),
             'short_description'    => $job->getShortDescription(),
@@ -330,7 +330,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
             'parameters'           => $job->getParameters(),
             'groups'               => $job->getGroups(),
             'is_active'            => ($job->getIsActive() ? '1' : '0'),
-        );
+        ];
 
         // Strip out the auto-generated name
         if ($values['name'] === $job->getJobCode()) {

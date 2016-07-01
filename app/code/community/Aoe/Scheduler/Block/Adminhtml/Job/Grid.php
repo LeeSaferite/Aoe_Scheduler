@@ -43,33 +43,33 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
         $this->getMassactionBlock()->setFormFieldName('codes');
         $this->getMassactionBlock()->addItem(
             'schedule',
-            array(
+            [
                 'label' => $this->__('Schedule now'),
                 'url'   => $this->getUrl('*/*/scheduleNow'),
-            )
+            ]
         );
         if (Mage::getStoreConfig('system/cron/enableRunNow')) {
             $this->getMassactionBlock()->addItem(
                 'run',
-                array(
+                [
                     'label' => $this->__('Run now'),
                     'url'   => $this->getUrl('*/*/runNow'),
-                )
+                ]
             );
         }
         $this->getMassactionBlock()->addItem(
             'disable',
-            array(
+            [
                 'label' => $this->__('Disable'),
                 'url'   => $this->getUrl('*/*/disable'),
-            )
+            ]
         );
         $this->getMassactionBlock()->addItem(
             'enable',
-            array(
+            [
                 'label' => $this->__('Enable'),
                 'url'   => $this->getUrl('*/*/enable'),
-            )
+            ]
         );
 
         return $this;
@@ -84,82 +84,82 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
     {
         $this->addColumn(
             'job_code',
-            array(
+            [
                 'header'   => $this->__('Job code'),
                 'index'    => 'job_code',
                 'sortable' => false,
-            )
+            ]
         );
 
         $this->addColumn(
             'name',
-            array(
+            [
                 'header'   => $this->__('Name'),
                 'index'    => 'name',
                 'sortable' => false,
-            )
+            ]
         );
 
         $this->addColumn(
             'short_description',
-            array(
+            [
                 'header'   => $this->__('Short Description'),
                 'index'    => 'short_description',
                 'sortable' => false,
-            )
+            ]
         );
 
         $this->addColumn(
             'schedule_cron_expr',
-            array(
+            [
                 'header'         => $this->__('Cron expression'),
                 'index'          => 'schedule_cron_expr',
                 'sortable'       => false,
-                'frame_callback' => array($this, 'decorateCronExpression'),
-            )
+                'frame_callback' => [$this, 'decorateCronExpression'],
+            ]
         );
         $this->addColumn(
             'run_model',
-            array(
+            [
                 'header'   => $this->__('Run model'),
                 'index'    => 'run_model',
                 'sortable' => false,
-            )
+            ]
         );
         $this->addColumn(
             'parameters',
-            array(
+            [
                 'header'         => $this->__('Parameters'),
                 'index'          => 'parameters',
                 'sortable'       => false,
-                'frame_callback' => array($this, 'decorateTrim'),
-            )
+                'frame_callback' => [$this, 'decorateTrim'],
+            ]
         );
         $this->addColumn(
             'groups',
-            array(
+            [
                 'header'         => $this->__('Groups'),
                 'index'          => 'groups',
                 'sortable'       => false,
-                'frame_callback' => array($this, 'decorateTrim'),
-            )
+                'frame_callback' => [$this, 'decorateTrim'],
+            ]
         );
         $this->addColumn(
             'type',
-            array(
+            [
                 'header'         => $this->__('Type'),
                 'sortable'       => false,
-                'frame_callback' => array($this, 'decorateType'),
-            )
+                'frame_callback' => [$this, 'decorateType'],
+            ]
         );
         $this->addColumn(
             'is_active',
-            array(
+            [
                 'header'         => $this->__('Status'),
                 'index'          => 'is_active',
                 'sortable'       => false,
-                'frame_callback' => array($this, 'decorateStatus'),
-            )
+                'frame_callback' => [$this, 'decorateStatus'],
+            ]
         );
 
         return parent::_prepareColumns();
@@ -230,7 +230,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      */
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/*/edit', array('job_code' => $row->getJobCode()));
+        return $this->getUrl('*/*/edit', ['job_code' => $row->getJobCode()]);
     }
 
     /**
@@ -240,6 +240,6 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      */
     public function getGridUrl()
     {
-        return $this->getUrl('adminhtml/job/index', array('_current' => true));
+        return $this->getUrl('adminhtml/job/index', ['_current' => true]);
     }
 }

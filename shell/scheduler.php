@@ -113,11 +113,11 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
 
         $collection->addFieldToFilter('job_code', $code)
             ->addFieldToFilter(
-                array('status'),
-                array(
-                    array('eq' => Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS),
-                    array('eq' => Aoe_Scheduler_Model_Schedule::STATUS_REPEAT),
-                )
+                ['status'],
+                [
+                    ['eq' => Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS],
+                    ['eq' => Aoe_Scheduler_Model_Schedule::STATUS_REPEAT],
+                ]
             )
             ->addOrder('finished_at', Varien_Data_Collection_Db::SORT_ORDER_DESC)
             ->getSelect()->limit(1);
@@ -536,12 +536,12 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
                 $excludeJobs = array_filter(array_map('trim', explode(',', $this->getArg('excludeJobs'))));
                 Mage::dispatchEvent(
                     $mode,
-                    array(
+                    [
                         'include_groups' => $includeGroups,
                         'exclude_groups' => $excludeGroups,
                         'include_jobs'   => $includeJobs,
                         'exclude_jobs'   => $excludeJobs,
-                    )
+                    ]
                 );
                 break;
             default:

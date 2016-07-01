@@ -54,25 +54,25 @@ $this->getConnection()->addColumn(
 $this->getConnection()->addColumn(
     $tableName,
     'scheduled_by',
-    array(
+    [
         'type'     => Varien_Db_Ddl_Table::TYPE_INTEGER,
         'unsigned' => true,
         'nullable' => true,
         'default'  => null,
         'comment'  => 'Scheduled by',
-    )
+    ]
 );
 
 $this->getConnection()->addColumn(
     $tableName,
     'scheduled_reason',
-    array(
+    [
         'type'     => Varien_Db_Ddl_Table::TYPE_TEXT,
         'length'   => 256,
         'nullable' => true,
         'default'  => null,
         'comment'  => 'Scheduled Reason',
-    )
+    ]
 );
 
 $this->endSetup();
