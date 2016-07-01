@@ -15,7 +15,7 @@ class SchedulingTest extends AbstractTest
         $this->assertCount(0, $collection);
 
         $scheduleManager->generateSchedules();
-        $collection = Mage::getModel('cron/schedule')->getCollection(); /* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
+        $collection = Mage::getModel('cron/schedule')->getCollection(); /* @var Mage_Cron_Model_Resource_Schedule_Collection $collection */
         $this->assertGreaterThan(0, $collection->count());
 
         $scheduleManager->deleteAll();
@@ -37,7 +37,7 @@ class SchedulingTest extends AbstractTest
         // fake schedule generation to avoid it to be generated on the next run:
         Mage::app()->saveCache(time(), Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
 
-        $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $schedule = Mage::getModel('cron/schedule'); /* @var Aoe_Scheduler_Model_Schedule $schedule */
         $jobCode = 'aoescheduler_testtask';
         $schedule->setJobCode($jobCode);
         $schedule->schedule();

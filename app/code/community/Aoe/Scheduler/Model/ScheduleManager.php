@@ -77,10 +77,10 @@ class Aoe_Scheduler_Model_ScheduleManager
      */
     public function getScheduleForAlwaysJob($jobCode, $reason=null)
     {
-        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var Aoe_Scheduler_Model_ProcessManager $processManager */
         if (!$processManager->isJobCodeRunning($jobCode)) {
             $ts = strftime('%Y-%m-%d %H:%M:00', time());
-            $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            $schedule = Mage::getModel('cron/schedule'); /* @var Aoe_Scheduler_Model_Schedule $schedule */
             $schedule
                 ->setScheduledReason($reason ? $reason : Aoe_Scheduler_Model_Schedule::REASON_ALWAYS)
                 ->setJobCode($jobCode)
@@ -141,7 +141,7 @@ class Aoe_Scheduler_Model_ScheduleManager
 
         $startTime = microtime(true);
 
-        /* @var $jobs Aoe_Scheduler_Model_Resource_Job_Collection */
+        /* @var Aoe_Scheduler_Model_Resource_Job_Collection $jobs */
         $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
         $jobs->setActiveOnly(true);
         foreach ($jobs as $job) {
@@ -162,7 +162,7 @@ class Aoe_Scheduler_Model_ScheduleManager
                 ->setOrder('scheduled_at', 'desc')
                 ->load();
 
-            $newestSchedule = $history->getFirstItem(); /* @var $newestSchedule Aoe_Scheduler_Model_Schedule */
+            $newestSchedule = $history->getFirstItem(); /* @var Aoe_Scheduler_Model_Schedule $newestSchedule */
 
             $duration = microtime(true) - $startTime;
             Mage::log('Generated schedule. Newest task is scheduled at "' . $newestSchedule->getScheduledAt() . '". (Duration: ' . round($duration, 2) . ' sec)', null, $logFile);
@@ -179,7 +179,7 @@ class Aoe_Scheduler_Model_ScheduleManager
      */
     public function flushSchedules($jobCode = null)
     {
-        /* @var $pendingSchedules Mage_Cron_Model_Resource_Schedule_Collection */
+        /* @var Mage_Cron_Model_Resource_Schedule_Collection $pendingSchedules */
         $pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
             ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_PENDING)
             ->addFieldToFilter('scheduled_at', array('gt' => strftime('%Y-%m-%d %H:%M:%S', time())))
@@ -202,7 +202,7 @@ class Aoe_Scheduler_Model_ScheduleManager
      */
     public function deleteAll()
     {
-        /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
+        /* @var Mage_Cron_Model_Resource_Schedule_Collection $schedules */
         $schedules = Mage::getModel('cron/schedule')->getCollection();
         foreach ($schedules as $key => $schedule) { /* @var Aoe_Scheduler_Model_Schedule $schedule */
             $schedule->delete();
@@ -234,7 +234,7 @@ class Aoe_Scheduler_Model_ScheduleManager
         $scheduleAheadFor = Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_SCHEDULE_AHEAD_FOR)*60;
         $timeAhead = $now + $scheduleAheadFor;
 
-        $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $schedule = Mage::getModel('cron/schedule'); /* @var Aoe_Scheduler_Model_Schedule $schedule */
         $schedule->initializeFromJob($job);
         $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_GENERATESCHEDULES);
 
@@ -292,7 +292,7 @@ class Aoe_Scheduler_Model_ScheduleManager
         );
 
         $now = time();
-        foreach ($history->getIterator() as $record) { /* @var $record Aoe_Scheduler_Model_Schedule */
+        foreach ($history->getIterator() as $record) { /* @var Aoe_Scheduler_Model_Schedule $record */
             if (isset($historyLifetimes[$record->getStatus()])) {
                 if (strtotime($record->getExecutedAt()) < $now - $historyLifetimes[$record->getStatus()]) {
                     $record->delete();
@@ -318,7 +318,7 @@ class Aoe_Scheduler_Model_ScheduleManager
                 ->setOrder('finished_at', 'desc')
                 ->load();
             $counter = array();
-            foreach ($history->getIterator() as $record) { /* @var $record Aoe_Scheduler_Model_Schedule */
+            foreach ($history->getIterator() as $record) { /* @var Aoe_Scheduler_Model_Schedule $record */
                 $jobCode = $record->getJobCode();
                 if (!isset($counter[$jobCode])) {
                     $counter[$jobCode] = 0;

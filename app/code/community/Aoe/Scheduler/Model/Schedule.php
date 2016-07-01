@@ -153,7 +153,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         if (!$forceRun) {
             // lock job (see below) prevents the exact same schedule from being executed from more than one process (or server)
             // the following check will prevent multiple schedules of the same type to be run in parallel
-            $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+            $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var Aoe_Scheduler_Model_ProcessManager $processManager */
             if ($processManager->isJobCodeRunning($this->getJobCode(), $this->getId())) {
                 $this->setStatus(self::STATUS_SKIP_OTHERJOBRUNNING);
                 $this->log(sprintf('Job "%s" (id: %s) will not be executed because there is already another process with the same job code running. Skipping.', $this->getJobCode(), $this->getId()));
@@ -543,7 +543,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $this->setScheduledBy(Mage::getSingleton('admin/session')->getUser()->getId());
         }
 
-        $collection = Mage::getModel('cron/schedule')/* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
+        $collection = Mage::getModel('cron/schedule')/* @var Mage_Cron_Model_Resource_Schedule_Collection $collection */
             ->getCollection()
             ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_PENDING)
             ->addFieldToFilter('job_code', $this->getJobCode())
@@ -784,7 +784,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
 
         $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        /* @var $connection Varien_Db_Adapter_Interface */
+        /* @var Varien_Db_Adapter_Interface $connection */
 
         $count = $connection
             ->update(

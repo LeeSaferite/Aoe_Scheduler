@@ -1,5 +1,5 @@
 <?php
-/* @var $this Mage_Core_Model_Resource_Setup */
+/* @var Mage_Core_Model_Resource_Setup $this */
 
 // Migrate to new settings
 $node = Mage::getConfig()->getNode('default/system/cron/disabled_crons');

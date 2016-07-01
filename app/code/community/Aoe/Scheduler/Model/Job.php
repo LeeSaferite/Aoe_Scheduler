@@ -139,7 +139,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
     public function getCallback()
     {
         $helper = Mage::helper('aoe_scheduler');
-        /* @var $helper Aoe_Scheduler_Helper_Data */
+        /* @var Aoe_Scheduler_Helper_Data $helper */
         return $helper->getCallBack($this->getRunModel());
     }
 

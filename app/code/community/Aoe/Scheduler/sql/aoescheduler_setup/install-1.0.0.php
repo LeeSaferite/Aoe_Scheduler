@@ -1,5 +1,5 @@
 <?php
-/* @var $this Mage_Core_Model_Resource_Setup */
+/* @var Mage_Core_Model_Resource_Setup $this */
 $this->startSetup();
 
 $tableName = $this->getTable('cron/schedule');

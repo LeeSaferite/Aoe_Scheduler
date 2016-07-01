@@ -143,7 +143,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         if ($this->isDisabled($jobCode)) {
             return false;
         }
-        $schedules = Mage::getModel('cron/schedule')->getCollection(); /* @var $schedules Mage_Cron_Model_Mysql4_Schedule_Collection */
+        $schedules = Mage::getModel('cron/schedule')->getCollection(); /* @var Mage_Cron_Model_Mysql4_Schedule_Collection $schedules */
         $schedules->getSelect()->limit(1)->order('executed_at DESC');
         $schedules->addFieldToFilter(
             array('status'),
@@ -188,7 +188,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isDisabled($jobCode)
     {
-        /* @var $job Aoe_Scheduler_Model_Job */
+        /* @var Aoe_Scheduler_Model_Job $job */
         $job = Mage::getModel('aoe_scheduler/job')->load($jobCode);
         return ($job->getJobCode() && !$job->getIsActive());
     }
@@ -216,7 +216,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
                 $cache[$key] = true;
             } else {
                 $cache[$key] = true;
-                /* @var $job Aoe_Scheduler_Model_Job */
+                /* @var Aoe_Scheduler_Model_Job $job */
                 $job = Mage::getModel('aoe_scheduler/job')->load($jobCode);
                 $groups = $this->trimExplode(',', $job->getGroups(), true);
                 if (count($include) > 0) {
@@ -238,7 +238,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         if ($this->groupsToJobsMap === null || $forceRebuild) {
             $map = array();
 
-            /* @var $jobs Aoe_Scheduler_Model_Resource_Job_Collection */
+            /* @var Aoe_Scheduler_Model_Resource_Job_Collection $jobs */
             $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
             foreach ($jobs as $job) {
                 /* @var Aoe_Scheduler_Model_Job $job */
@@ -284,11 +284,11 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 
         $recipients = $this->trimExplode(',', Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT), true);
 
-        $translate = Mage::getSingleton('core/translate'); /* @var $translate Mage_Core_Model_Translate */
+        $translate = Mage::getSingleton('core/translate'); /* @var Mage_Core_Model_Translate $translate */
         $translate->setTranslateInline(false);
 
         foreach ($recipients as $recipient) {
-            $emailTemplate = Mage::getModel('core/email_template'); /* @var $emailTemplate Mage_Core_Model_Email_Template */
+            $emailTemplate = Mage::getModel('core/email_template'); /* @var Mage_Core_Model_Email_Template $emailTemplate */
             $emailTemplate->setDesignConfig(array('area' => 'backend'));
             $emailTemplate->sendTransactional(
                 Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE),
@@ -333,7 +333,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     {
         try {
             $schedule = Mage::getModel('cron/schedule');
-            /* @var $schedule Mage_Cron_Model_Schedule */
+            /* @var Mage_Cron_Model_Schedule $schedule */
             $schedule->setCronExpr($cronExpression);
         } catch (Exception $e) {
             return false;

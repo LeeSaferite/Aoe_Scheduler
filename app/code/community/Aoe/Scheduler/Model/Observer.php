@@ -20,10 +20,10 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
             return;
         }
 
-        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var Aoe_Scheduler_Model_ProcessManager $processManager */
         $processManager->watchdog();
 
-        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
         $scheduleManager->logRun();
 
         $helper = Mage::helper('aoe_scheduler'); /* @var Aoe_Scheduler_Helper_Data $helper */
@@ -57,16 +57,16 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
             return;
         }
 
-        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var Aoe_Scheduler_Model_ProcessManager $processManager */
         $processManager->watchdog();
 
-        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
 
         $helper = Mage::helper('aoe_scheduler'); /* @var Aoe_Scheduler_Helper_Data $helper */
         $includeJobs = $helper->addGroupJobs((array) $observer->getIncludeJobs(), (array) $observer->getIncludeGroups());
         $excludeJobs = $helper->addGroupJobs((array) $observer->getExcludeJobs(), (array) $observer->getExcludeGroups());
 
-        /* @var $jobs Aoe_Scheduler_Model_Resource_Job_Collection */
+        /* @var Aoe_Scheduler_Model_Resource_Job_Collection $jobs */
         $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
         $jobs->setWhiteList($includeJobs);
         $jobs->setBlackList($excludeJobs);

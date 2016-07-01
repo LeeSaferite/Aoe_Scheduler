@@ -28,7 +28,7 @@ class Aoe_Scheduler_Helper_GracefulDead
 
     public static function beforeDying($message = null, $exit = false)
     {
-        $schedule = Mage::registry('currently_running_schedule');  /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $schedule = Mage::registry('currently_running_schedule');  /* @var Aoe_Scheduler_Model_Schedule $schedule */
         if ($schedule !== null) {
             if ($message) {
                 $schedule->addMessages($message);

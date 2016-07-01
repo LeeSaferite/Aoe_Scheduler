@@ -59,7 +59,7 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
      */
     protected function checkLocalCodePool()
     {
-        $helper = Mage::helper('aoe_scheduler/compatibility'); /* @var $helper Aoe_Scheduler_Helper_Compatibility */
+        $helper = Mage::helper('aoe_scheduler/compatibility'); /* @var Aoe_Scheduler_Helper_Compatibility $helper */
         if ($helper->oldConfigXmlExists()) {
             $this->_getSession()->addError($this->__('Looks like you have an older version of Aoe_Scheduler installed that lived in the local code pool. Please delete everything under "%s"', $helper->getLocalCodeDir()));
             return false;
@@ -99,7 +99,7 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
     protected function _checkCronUser()
     {
 
-        $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
+        $helper = Mage::helper('aoe_scheduler'); /* @var Aoe_Scheduler_Helper_Data $helper */
 
         // If opted out of the message, don't show it
         if (!$helper->getShowUserCronMessage()) {

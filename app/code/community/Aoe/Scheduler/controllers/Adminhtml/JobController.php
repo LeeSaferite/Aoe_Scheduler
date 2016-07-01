@@ -222,7 +222,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
                     return;
                 }
 
-                /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
+                /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
                 $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
                 $scheduleManager->flushSchedules($job->getJobCode());
                 $scheduleManager->generateSchedulesForJob($job);

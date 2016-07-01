@@ -19,10 +19,10 @@ abstract class AbstractTest extends PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        foreach ($this->jobs as $job) { /* @var $job Aoe_Scheduler_Model_Job */
+        foreach ($this->jobs as $job) { /* @var Aoe_Scheduler_Model_Job $job */
             $job->delete();
         }
-        foreach ($this->schedules as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Job */
+        foreach ($this->schedules as $schedule) { /* @var Aoe_Scheduler_Model_Job $schedule */
             $schedule->delete();
         }
         parent::tearDown();
@@ -48,7 +48,7 @@ abstract class AbstractTest extends PHPUnit_Framework_TestCase
         return array(
             array(function () {
                 // trigger dispatch
-                $observer = Mage::getModel('aoe_scheduler/observer'); /* @var $observer Aoe_Scheduler_Model_Observer */
+                $observer = Mage::getModel('aoe_scheduler/observer'); /* @var Aoe_Scheduler_Model_Observer $observer */
                 $observer->dispatchAlways(new Varien_Event_Observer());
             }),
             array(function () {
@@ -88,7 +88,7 @@ abstract class AbstractTest extends PHPUnit_Framework_TestCase
         return array(
             array(function () {
                 // trigger dispatch
-                $observer = Mage::getModel('aoe_scheduler/observer'); /* @var $observer Aoe_Scheduler_Model_Observer */
+                $observer = Mage::getModel('aoe_scheduler/observer'); /* @var Aoe_Scheduler_Model_Observer $observer */
                 $observer->dispatch(new Varien_Event_Observer());
             }),
             array(function () {
