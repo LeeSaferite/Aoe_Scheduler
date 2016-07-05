@@ -143,7 +143,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         $helper = $this->getHelper();
 
         // Check the user running the cron is the one defined in config
-        if (!$this->checkRunningAsCorrectUser()) {
+        if (!$this->getHelper()->checkRunningAsCorrectUser($this)) {
             $this->setStatus(self::STATUS_SKIP_WRONGUSER);
 
             return $this;
@@ -913,41 +913,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
 
         return $statuses;
-    }
-
-    /**
-     * Check if the user running the process matches the configured user. Message will capture
-     * cases where the user is not set too in its response message. Process may optionally be
-     * killed, or may be allowed to continue.
-     *
-     * @return bool
-     */
-    public function checkRunningAsCorrectUser()
-    {
-        if (Mage::helper('aoe_scheduler')->runningAsConfiguredUser()) {
-            return true;
-        }
-
-        // We may decide that these processes should be killed, or they may continue...
-        $kill = Mage::helper('aoe_scheduler')->getShouldKillOnWrongUser();
-        $optionalKillMessage = ($kill) ? ' Schedule will not run until this is addressed.' : '';
-
-        $this->log(
-            sprintf(
-                'Job "%s" (id: %s) is running as %s, but this doesn\'t match the configuration. You can disable this'
-                . ' message by setting the default user in configuration.' . $optionalKillMessage,
-                $this->getJobCode(),
-                $this->getId(),
-                Mage::helper('aoe_scheduler')->getRunningUser()
-            )
-        );
-
-        if ($kill) {
-            return false;
-        }
-
-        // Allow it to run anyway
-        return true;
     }
 
     /**

@@ -478,4 +478,52 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
             ->setPlainValue((string)$user)
             ->save();
     }
+
+    /**
+     * Check if the user running the process matches the configured user. Message will capture
+     * cases where the user is not set too in its response message. Process may optionally be
+     * killed, or may be allowed to continue.
+     *
+     * @return bool
+     */
+    public function checkRunningAsCorrectUser(Aoe_Scheduler_Model_Schedule $schedule)
+    {
+        if ($this->runningAsConfiguredUser()) {
+            return true;
+        }
+
+        // We may decide that these processes should be killed, or they may continue...
+        $kill = $this->getShouldKillOnWrongUser();
+        $optionalKillMessage = ($kill) ? ' Schedule will not run until this is addressed.' : '';
+
+        $this->log(
+            sprintf(
+                'Job "%s" (id: %s) is running as %s, but this doesn\'t match the configuration. You can disable this'
+                . ' message by setting the default user in configuration.' . $optionalKillMessage,
+                $schedule->getJobCode(),
+                $schedule->getId(),
+                $this->getRunningUser()
+            )
+        );
+
+        if ($kill) {
+            return false;
+        }
+
+        // Allow it to run anyway
+        return true;
+    }
+
+    /**
+     * Log message to configured log file (or skip)
+     *
+     * @param mixed    $message
+     * @param int|null $level
+     */
+    protected function log($message, $level = null)
+    {
+        if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
+            Mage::log($message, $level, $logFile);
+        }
+    }
 }
