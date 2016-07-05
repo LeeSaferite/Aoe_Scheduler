@@ -707,7 +707,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     }
 
     /**
-     * Bypass parent's setCronExpr is the expression is "always"
+     * Bypass parent's setCronExpr if the expression is "always"
      * This will break trySchedule, but always tasks will never be tried to scheduled anyway
      *
      * @param $expr
