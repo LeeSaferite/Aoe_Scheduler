@@ -514,19 +514,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     }
 
     /**
-     * Log message to configured log file (or skip)
-     *
-     * @param      $message
-     * @param null $level
-     */
-    protected function log($message, $level = null)
-    {
-        if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
-            Mage::log($message, $level, $logFile);
-        }
-    }
-
-    /**
      * Check if this is an "always" task
      *
      * @return bool
@@ -913,6 +900,19 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
 
         return $statuses;
+    }
+
+    /**
+     * Log message to configured log file (or skip)
+     *
+     * @param      $message
+     * @param null $level
+     */
+    protected function log($message, $level = null)
+    {
+        if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
+            Mage::log($message, $level, $logFile);
+        }
     }
 
     /**
