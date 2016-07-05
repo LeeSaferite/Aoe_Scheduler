@@ -458,4 +458,24 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return Mage::getStoreConfig(self::XML_PATH_RUN_ONLY_IF_CACHE_PREFIX_ID_MATCHES);
     }
+
+    /**
+     * Set the user who ran the last successfully started schedule into a core variable
+     *
+     * @param  string|null $user Optional: if specified, overrides the default
+     */
+    public function setLastRunUser($user = null)
+    {
+        if (is_null($user)) {
+            $user = $this->getRunningUser();
+        }
+
+        // Log the current user running the schedule if it's executed
+        Mage::getModel('core/variable')
+            ->loadByCode(self::VAR_LAST_RUN_USER_CODE)
+            ->setCode(self::VAR_LAST_RUN_USER_CODE)
+            ->setName('Scheduler - User Last Run As')
+            ->setPlainValue((string)$user)
+            ->save();
+    }
 }

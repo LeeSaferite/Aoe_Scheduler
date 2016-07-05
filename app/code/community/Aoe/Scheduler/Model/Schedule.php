@@ -140,6 +140,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     public function runNow($tryLockJob = true, $forceRun = false)
     {
+        $helper = $this->getHelper();
+
         // Check the user running the cron is the one defined in config
         if (!$this->checkRunningAsCorrectUser()) {
             $this->setStatus(self::STATUS_SKIP_WRONGUSER);
@@ -179,7 +181,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
         try {
             // Track the last user to run a job
-            $this->setLastRunUser();
+            $helper->setLastRunUser();
 
             $job = $this->getJob();
 
@@ -240,7 +242,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             // or they can set set the status directly to the schedule object that's passed as a parameter
             if ((is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') || $this->getStatus() === Aoe_Scheduler_Model_Schedule::STATUS_ERROR) {
                 $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_ERROR);
-                Mage::helper('aoe_scheduler')->sendErrorMail($this, $messages);
+                $helper->sendErrorMail($this, $messages);
                 Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_error', ['schedule' => $this]);
                 Mage::dispatchEvent('cron_after_error', ['schedule' => $this]);
             } elseif ((is_string($messages) && strtoupper(substr($messages, 0, 7)) == 'NOTHING') || $this->getStatus() === Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING) {
@@ -261,7 +263,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $this->addMessages(PHP_EOL . '---EXCEPTION---' . PHP_EOL . $e->__toString());
             Mage::dispatchEvent('cron_' . $this->getJobCode() . '_exception', ['schedule' => $this, 'exception' => $e]);
             Mage::dispatchEvent('cron_exception', ['schedule' => $this, 'exception' => $e]);
-            Mage::helper('aoe_scheduler')->sendErrorMail($this, $e->__toString());
+            $helper->sendErrorMail($this, $e->__toString());
         }
 
         $this->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
@@ -949,26 +951,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     }
 
     /**
-     * Set the user who ran the last successfully started schedule into a core variable
-     *
-     * @param  string|null $user Optional: if specified, overrides the default
-     *
-     * @return self
+     * @return Aoe_Scheduler_Helper_Data
      */
-    public function setLastRunUser($user = null)
+    protected function getHelper()
     {
-        if (is_null($user)) {
-            $user = Mage::helper('aoe_scheduler')->getRunningUser();
-        }
-
-        // Log the current user running the schedule if it's executed
-        Mage::getModel('core/variable')
-            ->loadByCode(Aoe_Scheduler_Helper_Data::VAR_LAST_RUN_USER_CODE)
-            ->setCode(Aoe_Scheduler_Helper_Data::VAR_LAST_RUN_USER_CODE)
-            ->setName('Scheduler - User Last Run As')
-            ->setPlainValue((string)$user)
-            ->save();
-
-        return $this;
+        return Mage::helper('aoe_scheduler');
     }
 }
