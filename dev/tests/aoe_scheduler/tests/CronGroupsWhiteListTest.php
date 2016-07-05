@@ -62,7 +62,7 @@ class CronGroupsWhiteListTest extends AbstractTest
 
         foreach ($this->schedules as $schedule) {
             /* @var Aoe_Scheduler_Model_Schedule $schedule */
-            $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_PENDING, $schedule->refresh()->getStatus());
+            $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_PENDING, $schedule->load($schedule->getId())->getStatus());
             // echo "Job code: {$schedule->getJobCode()}, Id: {$schedule->getId()}, Groups: " . $schedule->getJob()->getGroups() . "\n";
         }
 
