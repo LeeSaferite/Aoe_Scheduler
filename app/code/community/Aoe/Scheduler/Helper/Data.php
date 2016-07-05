@@ -7,7 +7,6 @@
  */
 class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 {
-
     const XML_PATH_MAX_RUNNING_TIME = 'system/cron/max_running_time';
     const XML_PATH_EMAIL_TEMPLATE = 'system/cron/error_email_template';
     const XML_PATH_EMAIL_IDENTITY = 'system/cron/error_email_identity';
@@ -20,6 +19,9 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     const VAR_LAST_RUN_USER_CODE = 'aoescheduler_lastrunuser';
 
     protected $groupsToJobsMap = null;
+
+    /** @var string[]|null */
+    protected $definedStatuses = null;
 
     /**
      * Explodes a string and trims all values for whitespace in the ends.
@@ -512,6 +514,35 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 
         // Allow it to run anyway
         return true;
+    }
+
+    /**
+     * Return all status codes
+     *
+     * This includes all const bases codes and all codes actually in the DB
+     *
+     * @return string[]
+     */
+    public function getStatuses()
+    {
+        if ($this->definedStatuses === null) {
+            $reflect = new ReflectionClass(get_class(Mage::getSingleton('cron/schedule')));
+            $constants = $reflect->getConstants();
+            $definedStatuses = [];
+            foreach ($constants as $key => $value) {
+                if (strpos($key, 'STATUS_') === 0) {
+                    $definedStatuses[$value] = $value;
+                }
+            }
+            $this->definedStatuses = $definedStatuses;
+        }
+
+        $usedStatuses = Mage::getSingleton('aoe_scheduler/schedule')->getCollection()->getStatuses();
+
+        $statuses = array_merge($this->definedStatuses, $usedStatuses);
+        asort($statuses);
+
+        return $statuses;
     }
 
     /**

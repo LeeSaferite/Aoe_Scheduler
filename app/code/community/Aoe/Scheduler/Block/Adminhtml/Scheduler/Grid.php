@@ -68,6 +68,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
      */
     protected function _prepareColumns()
     {
+        /** @var Aoe_Scheduler_Helper_Data $viewHelper */
         $viewHelper = $this->helper('aoe_scheduler/data');
 
         $this->addColumn(
@@ -181,7 +182,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
                 'index'          => 'status',
                 'frame_callback' => [$viewHelper, 'decorateStatus'],
                 'type'           => 'options',
-                'options'        => Mage::getSingleton('cron/schedule')->getAllStatuses(),
+                'options'        => $viewHelper->getStatuses(),
             ]
         );
 

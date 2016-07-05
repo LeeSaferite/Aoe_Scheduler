@@ -30,4 +30,22 @@ class Aoe_Scheduler_Model_Resource_Schedule_Collection extends Mage_Cron_Model_R
 
         return $tags;
     }
+
+    /**
+     * Gets statuses that are currently in the scheduler table
+     *
+     * @return array
+     */
+    public function getStatuses()
+    {
+        $select = clone $this->getSelect();
+        $select->group('status');
+        $select->reset(Zend_Db_Select::COLUMNS);
+        $select->columns('status');
+
+        $statuses = $this->getConnection()->fetchCol($select);
+        sort($statuses);
+
+        return array_combine($statuses, $statuses);
+    }
 }
