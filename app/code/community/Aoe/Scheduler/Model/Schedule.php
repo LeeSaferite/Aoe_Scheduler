@@ -742,7 +742,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             return $this;
         }
 
-        $this->addMessages('---START---' . PHP_EOL);
+        $this->addMessages("---START---\n");
 
         ob_start(
             function ($buffer) {
@@ -774,7 +774,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
 
         ob_end_flush();
-        $this->addMessages('---END---' . PHP_EOL);
+        $this->addMessages("\n---END---\n");
 
         $this->_redirect = false;
 
