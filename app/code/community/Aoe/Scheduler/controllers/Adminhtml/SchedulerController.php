@@ -102,6 +102,17 @@ class Aoe_Scheduler_Adminhtml_SchedulerController extends Aoe_Scheduler_Controll
     }
 
     /**
+     * Attempt to purge all locks
+     */
+    public function purgeLocksAction()
+    {
+        /** @var Aoe_Scheduler_Helper_Locking $helper */
+        $helper = Mage::helper('aoe_scheduler/locking');
+        $helper->purge();
+        $this->_redirect('*/*/index');
+    }
+
+    /**
      * Acl checking
      *
      * @return bool

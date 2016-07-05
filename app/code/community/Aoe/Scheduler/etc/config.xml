@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Aoe_Scheduler>
-            <version>1.5.0</version>
+            <version>3.0.0</version>
         </Aoe_Scheduler>
     </modules>
 
@@ -27,6 +27,11 @@
 
             <aoe_scheduler_resource>
                 <class>Aoe_Scheduler_Model_Resource</class>
+                <entities>
+                    <locking_mysql_table>
+                        <table>aoe_scheduler_locks</table>
+                    </locking_mysql_table>
+                </entities>
             </aoe_scheduler_resource>
 
             <cron>
@@ -167,6 +172,12 @@
                 <listCodeFilterType>select</listCodeFilterType>
                 <showCronUserMessage>1</showCronUserMessage>
                 <killOnIncorrectUser>0</killOnIncorrectUser>
+                <locking_providers>aoe_scheduler/locking_mysql_table</locking_providers>
+                <locking_provider>
+                    <mysql_table>
+                        <expire_seconds>600</expire_seconds>
+                    </mysql_table>
+                </locking_provider>
             </cron>
         </system>
     </default>

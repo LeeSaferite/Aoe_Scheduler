@@ -20,6 +20,9 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
             return;
         }
 
+        // Run locking cleanup
+        Mage::helper('aoe_scheduler/locking')->cleanup();
+
         $processManager = Mage::getModel('aoe_scheduler/processManager');
         /* @var Aoe_Scheduler_Model_ProcessManager $processManager */
         $processManager->watchdog();
@@ -59,6 +62,9 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         if (!Mage::getStoreConfigFlag('system/cron/enable')) {
             return;
         }
+
+        // Run locking cleanup
+        Mage::helper('aoe_scheduler/locking')->cleanup();
 
         $processManager = Mage::getModel('aoe_scheduler/processManager');
         /* @var Aoe_Scheduler_Model_ProcessManager $processManager */
