@@ -220,13 +220,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             try {
                 // this is where the magic happens
                 $messages = call_user_func_array($callback, [$this]);
-
+            } finally {
                 $this->restoreErrorContext();
                 $this->_stopBufferToMessages();
-            } catch (Exception $e) {
-                $this->restoreErrorContext();
-                $this->_stopBufferToMessages();
-                throw $e;
             }
 
             $this->log('Stop: ' . $this->getJobCode());
