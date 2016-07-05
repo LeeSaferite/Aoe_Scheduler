@@ -36,6 +36,8 @@
  * @method string getKillRequest()
  * @method $this setRepetition($repetition)
  * @method string getRepetition()
+ * @method Aoe_Scheduler_Model_Resource_Schedule getResource()
+ * @method Aoe_Scheduler_Model_Resource_Schedule_Collection getCollection()
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 {
@@ -695,8 +697,42 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     }
 
     /**
+     * Append data to the current messages field.
+     *
+     * @param $messages
+     *
+     * @return $this
+     */
+    public function addMessages($messages)
+    {
+        $this->setMessages($this->getMessages() . $messages);
+
+        return $this;
+    }
+
+    /**
+     * Bypass parent's setCronExpr is the expression is "always"
+     * This will break trySchedule, but always tasks will never be tried to scheduled anyway
+     *
+     * @param $expr
+     *
+     * @return $this
+     * @throws Mage_Core_Exception
+     */
+    public function setCronExpr($expr)
+    {
+        if ($expr == 'always') {
+            $this->setData('cron_expr', $expr);
+        } else {
+            parent::setCronExpr($expr);
+        }
+
+        return $this;
+    }
+
+    /**
      * Redirect all output to the messages field of this Schedule.
-     * We use ob_start with `_addBufferToMessages` to redirect the output.
+     * We use ob_start with a closure to redirect the output.
      *
      * @return $this
      */
@@ -713,7 +749,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         $this->addMessages('---START---' . PHP_EOL);
 
         ob_start(
-            [$this, '_addBufferToMessages'],
+            function ($buffer) {
+                $this->addMessages($buffer);
+                $this->getResource()->saveMessages($this);
+            },
             $this->_redirectOutputHandlerChunkSize
         );
 
@@ -742,115 +781,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         $this->addMessages('---END---' . PHP_EOL);
 
         $this->_redirect = false;
-
-        return $this;
-    }
-
-    /**
-     * Used as callback function to redirect the output buffer
-     * directly into the messages field of this schedule.
-     *
-     * @param $buffer
-     *
-     * @return string
-     */
-    public function _addBufferToMessages($buffer)
-    {
-        $this->addMessages($buffer)
-            ->saveMessages(); // Save the directly to the schedule record.
-
-        return $buffer;
-    }
-
-    /**
-     * Append data to the current messages field.
-     *
-     * @param $messages
-     *
-     * @return $this
-     */
-    public function addMessages($messages)
-    {
-        $this->setMessages($this->getMessages() . $messages);
-
-        return $this;
-    }
-
-    /**
-     * Save the messages directly to the schedule record.
-     *
-     * If the `messages` field was not updated in the database,
-     * check if this is because of `data truncation` and fix the message length.
-     *
-     * @return $this
-     */
-    public function saveMessages()
-    {
-        if (!$this->getId()) {
-            return $this->save();
-        }
-
-        $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
-        /* @var Varien_Db_Adapter_Interface $connection */
-
-        $count = $connection
-            ->update(
-                $this->getResource()->getMainTable(),
-                ['messages' => $this->getMessages()],
-                ['schedule_id = ?' => $this->getId()]
-            );
-
-        if (!$count) {
-            /**
-             * Check if the row was not updated because of data truncation.
-             */
-            $warning = $this->_getPdoWarning($connection->getConnection());
-            if ($warning && $warning->Code = 1265) {
-                $maxLength = strlen($this->getMessages()) - 5000;
-                $this->setMessages(
-                    $warning->Level . ': ' .
-                    str_replace(' at row 1', '.', $warning->Message) . PHP_EOL . PHP_EOL .
-                    '...' . substr($this->getMessages(), -$maxLength)
-                );
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Retrieve the last PDO warning.
-     *
-     * @param PDO $pdo
-     *
-     * @return mixed
-     */
-    protected function _getPdoWarning(PDO $pdo)
-    {
-        $originalErrorMode = $pdo->getAttribute(PDO::ATTR_ERRMODE);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-        $stm = $pdo->query('SHOW WARNINGS');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, $originalErrorMode);
-
-        return $stm->fetchObject();
-    }
-
-    /**
-     * Bypass parent's setCronExpr is the expression is "always"
-     * This will break trySchedule, but always tasks will never be tried to scheduled anyway
-     *
-     * @param $expr
-     *
-     * @return $this
-     * @throws Mage_Core_Exception
-     */
-    public function setCronExpr($expr)
-    {
-        if ($expr == 'always') {
-            $this->setData('cron_expr', $expr);
-        } else {
-            parent::setCronExpr($expr);
-        }
 
         return $this;
     }
