@@ -53,8 +53,6 @@ Please get in touch with us via the [issue tracker on GitHub](https://github.com
 ## Compability
 
 - PHP: 
-  - 5.3
-  - 5.4
   - 5.5
 - Magento CE: 
   - 1.6.2.0
