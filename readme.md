@@ -43,7 +43,7 @@ Author:
 - [Fabrizio Branca](https://twitter.com/fbrnc)
 
 Major Contributions:
-- [Lee Saferite](https://twitter.com/leesaferite)
+- [Lee Saferite](https://github.com/LeeSaferite)
 - For a full list of contributors visit [AOE Scheduler on GitHub](https://github.com/AOEpeople/Aoe_Scheduler/graphs/contributors)
 
 ## Ideas, bugs, contributions, comments, feature suggestions?
