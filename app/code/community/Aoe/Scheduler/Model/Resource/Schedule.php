@@ -3,6 +3,83 @@
 class Aoe_Scheduler_Model_Resource_Schedule extends Mage_Cron_Model_Resource_Schedule
 {
     /**
+     * @param Aoe_Scheduler_Model_Schedule $schedule
+     *
+     * @return bool
+     *
+     * @throws Exception
+     */
+    public function updateLastSeen(Aoe_Scheduler_Model_Schedule $schedule)
+    {
+        if (!$schedule->getId()) {
+            return false;
+        }
+
+        $this->_getWriteAdapter()->beginTransaction();
+
+        try {
+            $rows = $this->_getWriteAdapter()->update(
+                $this->getMainTable(),
+                ['last_seen' => new Zend_Db_Expr('NOW()')],
+                ['schedule_id = ?' => $schedule->getId()]
+            );
+
+            if ($rows == 1) {
+                $select = $this->_getWriteAdapter()->select()
+                    ->from($this->getMainTable(), ['last_seen'])
+                    ->where('schedule_id = ?', $schedule->getId());
+
+                $result = $this->_getWriteAdapter()->fetchOne($select);
+
+                $this->_getWriteAdapter()->commit();
+
+                $schedule->setDataUsingMethod('last_seen', $result);
+
+                return true;
+            } else {
+                $this->_getWriteAdapter()->commit();
+
+                return false;
+            }
+        } catch (Exception $e) {
+            $this->_getWriteAdapter()->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * @param Aoe_Scheduler_Model_Schedule $schedule
+     *
+     * @return bool
+     */
+    public function setKillRequest(Aoe_Scheduler_Model_Schedule $schedule)
+    {
+        $rows = $this->_getWriteAdapter()->update(
+            $this->getMainTable(),
+            ['kill_request' => new Zend_Db_Expr('NOW()')],
+            ['schedule_id = ?' => $schedule->getId()]
+        );
+
+        return ($rows == 1);
+    }
+
+    /**
+     * @param Aoe_Scheduler_Model_Schedule $schedule
+     *
+     * @return bool
+     */
+    public function clearKillRequest(Aoe_Scheduler_Model_Schedule $schedule)
+    {
+        $rows = $this->_getWriteAdapter()->update(
+            $this->getMainTable(),
+            ['kill_request' => new Zend_Db_Expr('NULL')],
+            ['schedule_id = ?' => $schedule->getId()]
+        );
+
+        return ($rows == 1);
+    }
+
+    /**
      * Save the messages directly to the schedule record.
      *
      * If the `messages` field was not updated in the database,
